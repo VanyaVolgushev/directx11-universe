@@ -1,19 +1,16 @@
-// DisplayWin32.h
 #pragma once
 #include <windows.h>
-#include <string>
-
-class Game;
 
 class DisplayWin32
 {
 public:
-    int ClientWidth;
     int ClientHeight;
-    HWND hWnd;
+    int ClientWidth;
     HINSTANCE hInstance;
-    WNDCLASSEX wc{};
+    HWND hWnd;
+    HMODULE Module;
+    WNDCLASSEX wc;
 
-    DisplayWin32(int w, int h, const std::wstring& title, Game* game);
+    DisplayWin32(LPCWSTR applicationName, HINSTANCE hInst, int screenWidth, int screenHeight);
     ~DisplayWin32();
 };

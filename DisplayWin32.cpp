@@ -1,58 +1,51 @@
-// DisplayWin32.cpp
 #include "DisplayWin32.h"
-#include "Game.h"
 
-LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam);
+// Forward declaration for the global WndProc
+extern LRESULT CALLBACK GlobalWndProc(HWND hwnd, UINT umessage, WPARAM wparam, LPARAM lparam);
 
-DisplayWin32::DisplayWin32(int w, int h, const std::wstring& title, Game* game)
-    : ClientWidth(w), ClientHeight(h)
+DisplayWin32::DisplayWin32(LPCWSTR applicationName, HINSTANCE hInst, int screenWidth, int screenHeight)
 {
-    hInstance = GetModuleHandle(nullptr);
+    hInstance = hInst;
+    Module = GetModuleHandle(nullptr);
+    ClientWidth = screenWidth;
+    ClientHeight = screenHeight;
 
-    wc = {};
-    wc.cbSize = sizeof(WNDCLASSEX);
     wc.style = CS_HREDRAW | CS_VREDRAW | CS_OWNDC;
-    wc.lpfnWndProc = WndProc;
+    wc.lpfnWndProc = GlobalWndProc;
+    wc.cbClsExtra = 0;
+    wc.cbWndExtra = 0;
     wc.hInstance = hInstance;
     wc.hIcon = LoadIcon(nullptr, IDI_WINLOGO);
+    wc.hIconSm = wc.hIcon;
     wc.hCursor = LoadCursor(nullptr, IDC_ARROW);
-    wc.hbrBackground = (HBRUSH)GetStockObject(BLACK_BRUSH);
-    wc.lpszClassName = title.c_str();
+    wc.hbrBackground = static_cast<HBRUSH>(GetStockObject(BLACK_BRUSH));
+    wc.lpszMenuName = nullptr;
+    wc.lpszClassName = applicationName;
+    wc.cbSize = sizeof(WNDCLASSEX);
 
     RegisterClassEx(&wc);
 
-    RECT rect{ 0,0,w,h };
-    AdjustWindowRect(&rect, WS_OVERLAPPEDWINDOW, FALSE);
+    RECT windowRect = { 0, 0, static_cast<LONG>(ClientWidth), static_cast<LONG>(ClientHeight) };
+    AdjustWindowRect(&windowRect, WS_OVERLAPPEDWINDOW, FALSE);
 
-    hWnd = CreateWindowEx(WS_EX_APPWINDOW,
-        title.c_str(), title.c_str(),
-        WS_OVERLAPPEDWINDOW,
-        CW_USEDEFAULT, CW_USEDEFAULT,
-        rect.right - rect.left, rect.bottom - rect.top,
-        nullptr, nullptr, hInstance, game);
+    auto dwStyle = WS_SYSMENU | WS_CAPTION | WS_MINIMIZEBOX | WS_THICKFRAME;
+    auto posX = (GetSystemMetrics(SM_CXSCREEN) - ClientWidth) / 2;
+    auto posY = (GetSystemMetrics(SM_CYSCREEN) - ClientHeight) / 2;
+
+    hWnd = CreateWindowEx(WS_EX_APPWINDOW, applicationName, applicationName,
+        dwStyle, posX, posY,
+        windowRect.right - windowRect.left,
+        windowRect.bottom - windowRect.top,
+        nullptr, nullptr, hInstance, nullptr);
 
     ShowWindow(hWnd, SW_SHOW);
     SetForegroundWindow(hWnd);
     SetFocus(hWnd);
+    ShowCursor(true);
 }
 
 DisplayWin32::~DisplayWin32()
 {
-    if (hWnd) DestroyWindow(hWnd);
-}
-
-// Forward to Game::MessageHandler (you'll need to store Game* in window long ptr or global)
-LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp)
-{
-    if (msg == WM_NCCREATE)
-    {
-        auto cs = reinterpret_cast<CREATESTRUCT*>(lp);
-        SetWindowLongPtr(hwnd, GWLP_USERDATA, reinterpret_cast<LONG_PTR>(cs->lpCreateParams));
-    }
-
-    auto game = reinterpret_cast<Game*>(GetWindowLongPtr(hwnd, GWLP_USERDATA));
-    if (game)
-        game->MessageHandler(hwnd, msg, wp, lp);
-
-    return DefWindowProc(hwnd, msg, wp, lp);
+    DestroyWindow(hWnd);
+    UnregisterClass(wc.lpszClassName, hInstance);
 }

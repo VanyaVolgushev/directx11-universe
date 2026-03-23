@@ -1,29 +1,29 @@
 #pragma once
 #include "GameComponent.h"
-#include <vector>
-#include <DirectXMath.h>
-#include <wrl/client.h>
-
-using Microsoft::WRL::ComPtr;
+#include <d3d11.h>
+#include <wrl.h>
+#include <directxmath.h>
 
 class TriangleComponent : public GameComponent
 {
 private:
-    ComPtr<ID3D11InputLayout>          layout;
-    ComPtr<ID3D11PixelShader>          pixelShader;
-    ComPtr<ID3DBlob>                   pixelShaderByteCode;
-    ComPtr<ID3D11RasterizerState>      rastState;
-    ComPtr<ID3D11VertexShader>         vertexShader;
-    ComPtr<ID3DBlob>                   vertexShaderByteCode;
+    Microsoft::WRL::ComPtr<ID3D11InputLayout> layout;
+    Microsoft::WRL::ComPtr<ID3D11PixelShader> pixelShader;
+    Microsoft::WRL::ComPtr<ID3DBlob> pixelShaderByteCode;
+    Microsoft::WRL::ComPtr<ID3D11RasterizerState> rastState;
+    Microsoft::WRL::ComPtr<ID3D11VertexShader> vertexShader;
+    Microsoft::WRL::ComPtr<ID3DBlob> vertexShaderByteCode;
+    Microsoft::WRL::ComPtr<ID3D11Buffer> vertices;
+    Microsoft::WRL::ComPtr<ID3D11Buffer> indices; // implied requirement for draw indexed
 
-    std::vector<DirectX::XMFLOAT4>     vertices;   // interleaved pos+color
+    DirectX::XMFLOAT4 points[8];
 
 public:
-    TriangleComponent() = default;
-    explicit TriangleComponent(Game* game);
+    TriangleComponent(Game* game);
+    virtual ~TriangleComponent();
 
     void Initialize() override;
-    void Update()     override;
-    void Draw()       override;
+    void Update() override;
+    void Draw() override;
     void DestroyResources() override;
 };
