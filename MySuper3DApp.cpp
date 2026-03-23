@@ -11,29 +11,65 @@
 #include <directxmath.h>
 #include <chrono>
 
+#include "InputDevice.h"
 
 #pragma comment(lib, "d3d11.lib")
 #pragma comment(lib, "dxgi.lib")
 #pragma comment(lib, "d3dcompiler.lib")
 #pragma comment(lib, "dxguid.lib")
 
+InputDevice* g_InputDevice = nullptr;
 
 LRESULT CALLBACK WndProc(HWND hwnd, UINT umessage, WPARAM wparam, LPARAM lparam)
 {
 	switch (umessage)
 	{
-	case WM_KEYDOWN:
-	{
-		// If a key is pressed send it to the input object so it can record that state.
-		std::cout << "Key: " << static_cast<unsigned int>(wparam) << std::endl;
-
-		if (static_cast<unsigned int>(wparam) == 27) PostQuitMessage(0);
+	case WM_DESTROY:
+	case WM_CLOSE:
+		PostQuitMessage(0);
 		return 0;
+
+	case WM_INPUT:
+	{
+		if (!g_InputDevice) return DefWindowProc(hwnd, umessage, wparam, lparam);
+
+		UINT dwSize = 0;
+		GetRawInputData(reinterpret_cast<HRAWINPUT>(lparam), RID_INPUT, nullptr, &dwSize, sizeof(RAWINPUTHEADER));
+		LPBYTE lpb = new BYTE[dwSize];
+		if (lpb == nullptr) return 0;
+
+		if (GetRawInputData((HRAWINPUT)lparam, RID_INPUT, lpb, &dwSize, sizeof(RAWINPUTHEADER)) != dwSize)
+			OutputDebugString(TEXT("GetRawInputData does not return correct size !\n"));
+
+		RAWINPUT* raw = reinterpret_cast<RAWINPUT*>(lpb);
+
+		if (raw->header.dwType == RIM_TYPEKEYBOARD)
+		{
+			g_InputDevice->OnKeyDown({
+				raw->data.keyboard.MakeCode,
+				raw->data.keyboard.Flags,
+				raw->data.keyboard.VKey,
+				raw->data.keyboard.Message
+				});
+		}
+		else if (raw->header.dwType == RIM_TYPEMOUSE)
+		{
+			g_InputDevice->OnMouseMove({
+				raw->data.mouse.usFlags,
+				raw->data.mouse.usButtonFlags,
+				static_cast<int>(raw->data.mouse.ulExtraInformation),
+				static_cast<int>(raw->data.mouse.ulRawButtons),
+				static_cast<short>(raw->data.mouse.usButtonData),
+				raw->data.mouse.lLastX,
+				raw->data.mouse.lLastY
+				});
+		}
+
+		delete[] lpb;
+		return DefWindowProc(hwnd, umessage, wparam, lparam);
 	}
 	default:
-		{
-			return DefWindowProc(hwnd, umessage, wparam, lparam);
-		}
+		return DefWindowProc(hwnd, umessage, wparam, lparam);
 	}
 }
 
@@ -87,6 +123,8 @@ int main()
 
 	ShowCursor(true);
 
+	// Initialize our input device and attach it to the window
+	g_InputDevice = new InputDevice(hWnd);
 #pragma endregion Window init
 
 
@@ -286,6 +324,11 @@ int main()
 
 		// If windows signals to end the application then exit out.
 		if (msg.message == WM_QUIT) {
+			isExitRequested = true;
+		}
+
+		// TEST THE INPUT DEVICE! Exit if Escape is pressed.
+		if (g_InputDevice && g_InputDevice->IsKeyDown(Keys::Escape)) {
 			isExitRequested = true;
 		}
 

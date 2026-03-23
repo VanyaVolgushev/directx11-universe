@@ -1,38 +1,36 @@
 #pragma once
 
 #include <unordered_set>
+#include <windows.h>
+#include <directxmath.h> // Replaces SimpleMath
 #include "Keys.h"
-#include "Exports.h"
+#include "Delegates.h"   // Make sure Delegates is included
 
-
-class Game;
-
-class GAMEFRAMEWORK_API InputDevice
+class InputDevice
 {
-	friend class Game;
-	
-	Game* game;
+	friend LRESULT CALLBACK WndProc(HWND hwnd, UINT umessage, WPARAM wparam, LPARAM lparam);
+
+	HWND hWnd; // Replaced 'Game' pointer with raw Window Handle
 
 	std::unordered_set<Keys>* keys;
 
 public:
-	
 	struct MouseMoveEventArgs
 	{
-		DirectX::SimpleMath::Vector2 Position;
-		DirectX::SimpleMath::Vector2 Offset;
+		DirectX::XMFLOAT2 Position; // Replaced Vector2
+		DirectX::XMFLOAT2 Offset;   // Replaced Vector2
 		int WheelDelta;
 	};
 
-	DirectX::SimpleMath::Vector2 MousePosition;
-	DirectX::SimpleMath::Vector2 MouseOffset;
+	DirectX::XMFLOAT2 MousePosition;
+	DirectX::XMFLOAT2 MouseOffset;
 	int MouseWheelDelta;
 
 	MulticastDelegate<const MouseMoveEventArgs&> MouseMove;
-	
+
 public:
-	
-	InputDevice(Game* inGame);
+
+	InputDevice(HWND inHWnd); // Takes HWND directly now
 	~InputDevice();
 
 
@@ -107,7 +105,7 @@ protected:
 		int Buttons;
 		int WheelDelta;
 		int X;
-		int Y;
+		int Y;	
 	};
 
 	void OnKeyDown(KeyboardInputEventArgs args);

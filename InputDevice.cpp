@@ -1,27 +1,23 @@
-#include "pch.h"
 #include "InputDevice.h"
 #include <iostream>
-#include "Game.h"
 
+using namespace DirectX;
 
-using namespace DirectX::SimpleMath;
-
-
-InputDevice::InputDevice(Game* inGame) : game(inGame)
+InputDevice::InputDevice(HWND inHWnd) : hWnd(inHWnd)
 {
 	keys = new std::unordered_set<Keys>();
-	
+
 	RAWINPUTDEVICE Rid[2];
 
 	Rid[0].usUsagePage = 0x01;
 	Rid[0].usUsage = 0x02;
-	Rid[0].dwFlags = 0;   // adds HID mouse and also ignores legacy mouse messages
-	Rid[0].hwndTarget = game->Display->hWnd;
+	Rid[0].dwFlags = 0;
+	Rid[0].hwndTarget = hWnd; // Replaced game->Display->hWnd
 
 	Rid[1].usUsagePage = 0x01;
 	Rid[1].usUsage = 0x06;
-	Rid[1].dwFlags = 0;   // adds HID keyboard and also ignores legacy keyboard messages
-	Rid[1].hwndTarget = game->Display->hWnd;
+	Rid[1].dwFlags = 0;
+	Rid[1].hwndTarget = hWnd; // Replaced game->Display->hWnd
 
 	if (RegisterRawInputDevices(Rid, 2, sizeof(Rid[0])) == FALSE)
 	{
@@ -68,13 +64,13 @@ void InputDevice::OnMouseMove(RawMouseEventArgs args)
 
 	POINT p;
 	GetCursorPos(&p);
-	ScreenToClient(game->Display->hWnd, &p);
-	
-	MousePosition	= Vector2(p.x, p.y);
-	MouseOffset		= Vector2(args.X, args.Y);
+	ScreenToClient(hWnd, &p); // Replaced game->Display->hWnd
+
+	MousePosition = XMFLOAT2((float)p.x, (float)p.y);
+	MouseOffset = XMFLOAT2((float)args.X, (float)args.Y);
 	MouseWheelDelta = args.WheelDelta;
 
-	const MouseMoveEventArgs moveArgs = {MousePosition, MouseOffset, MouseWheelDelta};
+	const MouseMoveEventArgs moveArgs = { MousePosition, MouseOffset, MouseWheelDelta };
 
 	//printf(" Mouse: posX=%04.4f posY:%04.4f offsetX:%04.4f offsetY:%04.4f, wheelDelta=%04d \n",
 	//	MousePosition.x,
