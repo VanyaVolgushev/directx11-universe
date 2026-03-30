@@ -38,7 +38,6 @@ int main()
     std::uniform_real_distribution<float> speedDist(0.45f, 0.65f);      // Orbital speeds
     std::uniform_real_distribution<float> sizeDist(0.05f, 0.15f);       // Very small sizes
     std::uniform_real_distribution<float> colorDist(0.4f, 0.6f);        // Grayscale rock colors
-    std::uniform_real_distribution<float> angleDist(0.0f, 6.28318f);    // 0 to 2*PI (See note below!)
 
     const int NUM_ASTEROIDS = 200;
     for (int i = 0; i < NUM_ASTEROIDS; i++) {
