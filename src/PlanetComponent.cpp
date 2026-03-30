@@ -6,8 +6,8 @@
 #include "DisplayWin32.h"
 #include "CameraComponent.h"
 
-PlanetComponent::PlanetComponent(Game* game, PlanetComponent* parent, float orbitRadius, float angularSpeed, float radius, DirectX::XMFLOAT4 color, PlanetShape shape)
-    : GameComponent(game), parent(parent), orbitRadius(orbitRadius), angularSpeed(angularSpeed), radius(radius), color(color), shape(shape), currentPosition(0, 0, 0), indexCount(0)
+PlanetComponent::PlanetComponent(Game* game, PlanetComponent* parent, float orbitRadius, float angularSpeed, float radius, DirectX::XMFLOAT4 color, PlanetShape shape, float rotationSpeed)
+    : GameComponent(game), parent(parent), orbitRadius(orbitRadius), angularSpeed(angularSpeed), radius(radius), color(color), shape(shape), currentPosition(0, 0, 0), indexCount(0), rotationSpeed(rotationSpeed)
 {
     worldMatrix = DirectX::XMMatrixIdentity();
 }
@@ -121,8 +121,13 @@ void PlanetComponent::Update() {
         currentPosition.z += pPos.z;
     }
 
+    currentRotation.y = rotationSpeed * game->TotalTime;
+
     // Build absolute world matrix
     worldMatrix = XMMatrixScaling(radius, radius, radius) *
+        XMMatrixRotationY(currentRotation.y) *
+        XMMatrixRotationX(currentRotation.x) *
+        XMMatrixRotationZ(currentRotation.z) *
         XMMatrixTranslation(currentPosition.x, currentPosition.y, currentPosition.z);
 }
 

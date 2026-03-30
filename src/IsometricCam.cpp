@@ -26,7 +26,6 @@ void IsometricCam::Update() {
 
     if (game->MainCamera != this) return;
 
-    // Adjust view width (zoom) using W and S
     if (game->InputDevice->IsKeyDown(Keys::W)) viewWidth -= zoomSpeed * dt;
     if (game->InputDevice->IsKeyDown(Keys::S)) viewWidth += zoomSpeed * dt;
     if (viewWidth < 1.0f) viewWidth = 1.0f;

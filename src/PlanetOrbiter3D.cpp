@@ -1,4 +1,5 @@
 #include <iostream>
+#include <random>
 
 #include "PlanetComponent.h"
 #include "Game.h"
@@ -10,6 +11,7 @@
 int main()
 {
     Game game(L"PlanetOrbiter", 1024, 768);
+
     auto sun = new PlanetComponent(&game, nullptr, 0.0f, 0.0f, 3.0f, { 1.0f, 0.9f, 0.0f, 1.0f }, PlanetShape::Sphere);
     game.Components.push_back(sun);
 
@@ -21,19 +23,40 @@ int main()
 
     auto earth = new PlanetComponent(&game, sun, 14.0f, 1.0f, 1.0f, { 0.2f, 0.4f, 0.9f, 1.0f }, PlanetShape::Sphere);
     game.Components.push_back(earth);
-
-    auto moon = new PlanetComponent(&game, earth, 2.0f, 4.0f, 0.3f, { 0.7f, 0.7f, 0.7f, 1.0f }, PlanetShape::Box);
+    auto moon = new PlanetComponent(&game, earth, 2.0f, 4.0f, 0.3f, { 0.7f, 0.7f, 0.7f, 1.0f }, PlanetShape::Box, -4.0f);
     game.Components.push_back(moon);
 
     auto mars = new PlanetComponent(&game, sun, 19.0f, 0.8f, 0.7f, { 0.8f, 0.3f, 0.1f, 1.0f }, PlanetShape::Sphere);
     game.Components.push_back(mars);
-
     auto phobos = new PlanetComponent(&game, mars, 1.5f, 5.0f, 0.2f, { 0.5f, 0.4f, 0.4f, 1.0f }, PlanetShape::Box);
     game.Components.push_back(phobos);
 
+    // --- ASTEROID BELT ---
+    std::random_device rd;
+    std::mt19937 gen(rd());
+    std::uniform_real_distribution<float> beltRadiusDist(21.0f, 26.0f); // Between Mars (19) and Jupiter (28)
+    std::uniform_real_distribution<float> speedDist(0.45f, 0.65f);      // Orbital speeds
+    std::uniform_real_distribution<float> sizeDist(0.05f, 0.15f);       // Very small sizes
+    std::uniform_real_distribution<float> colorDist(0.4f, 0.6f);        // Grayscale rock colors
+    std::uniform_real_distribution<float> angleDist(0.0f, 6.28318f);    // 0 to 2*PI (See note below!)
+
+    const int NUM_ASTEROIDS = 200;
+    for (int i = 0; i < NUM_ASTEROIDS; i++) {
+        float r = beltRadiusDist(gen);
+        float speed = speedDist(gen);
+        float size = sizeDist(gen);
+        float gray = colorDist(gen);
+
+        // 50/50 mix of boxes and spheres
+        PlanetShape shape = (i % 2 == 0) ? PlanetShape::Box : PlanetShape::Sphere;
+
+        auto asteroid = new PlanetComponent(&game, sun, r, speed, size, { gray, gray, gray, 1.0f }, shape);
+        game.Components.push_back(asteroid);
+    }
+    // --- END ASTEROID BELT ---
+
     auto jupiter = new PlanetComponent(&game, sun, 28.0f, 0.4f, 2.0f, { 0.8f, 0.7f, 0.6f, 1.0f }, PlanetShape::Sphere);
     game.Components.push_back(jupiter);
-
     auto io = new PlanetComponent(&game, jupiter, 2.5f, 3.5f, 0.25f, { 0.9f, 0.9f, 0.2f, 1.0f }, PlanetShape::Sphere);
     game.Components.push_back(io);
     auto europa = new PlanetComponent(&game, jupiter, 3.2f, 2.8f, 0.2f, { 0.8f, 0.8f, 0.9f, 1.0f }, PlanetShape::Sphere);
@@ -45,7 +68,6 @@ int main()
 
     auto saturn = new PlanetComponent(&game, sun, 38.0f, 0.25f, 1.7f, { 0.9f, 0.8f, 0.5f, 1.0f }, PlanetShape::Sphere);
     game.Components.push_back(saturn);
-
     auto titan = new PlanetComponent(&game, saturn, 3.0f, 2.0f, 0.4f, { 0.8f, 0.6f, 0.2f, 1.0f }, PlanetShape::Sphere);
     game.Components.push_back(titan);
     auto enceladus = new PlanetComponent(&game, saturn, 2.0f, 3.5f, 0.15f, { 0.9f, 0.9f, 0.9f, 1.0f }, PlanetShape::Box);
@@ -53,19 +75,16 @@ int main()
 
     auto uranus = new PlanetComponent(&game, sun, 47.0f, 0.15f, 1.2f, { 0.6f, 0.8f, 0.9f, 1.0f }, PlanetShape::Sphere);
     game.Components.push_back(uranus);
-
     auto titania = new PlanetComponent(&game, uranus, 2.0f, 1.5f, 0.2f, { 0.7f, 0.7f, 0.7f, 1.0f }, PlanetShape::Sphere);
     game.Components.push_back(titania);
 
     auto neptune = new PlanetComponent(&game, sun, 55.0f, 0.1f, 1.1f, { 0.2f, 0.3f, 0.8f, 1.0f }, PlanetShape::Sphere);
     game.Components.push_back(neptune);
-
     auto triton = new PlanetComponent(&game, neptune, 2.0f, -1.8f, 0.25f, { 0.8f, 0.8f, 0.8f, 1.0f }, PlanetShape::Sphere);
     game.Components.push_back(triton);
 
     auto pluto = new PlanetComponent(&game, sun, 63.0f, 0.07f, 0.3f, { 0.8f, 0.7f, 0.6f, 1.0f }, PlanetShape::Sphere);
     game.Components.push_back(pluto);
-
     auto charon = new PlanetComponent(&game, pluto, 0.8f, 2.5f, 0.15f, { 0.6f, 0.6f, 0.6f, 1.0f }, PlanetShape::Box);
     game.Components.push_back(charon);
 

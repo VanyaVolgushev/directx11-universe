@@ -18,7 +18,8 @@ public:
         float angularSpeed,
         float radius,
         DirectX::XMFLOAT4 color,
-        PlanetShape shape = PlanetShape::Sphere);
+        PlanetShape shape = PlanetShape::Sphere,
+        float rotationSpeed = 0.0f);
 
     ~PlanetComponent();
 
@@ -37,10 +38,14 @@ private:
     float orbitRadius;
     float angularSpeed;
     float radius;
+    float rotationSpeed;
+
     DirectX::XMFLOAT4 color;
     PlanetShape shape;
 
     DirectX::XMFLOAT3 currentPosition;
+    DirectX::XMFLOAT3 currentRotation;
+
     DirectX::XMMATRIX worldMatrix;
     UINT indexCount;
 
