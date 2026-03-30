@@ -1,15 +1,16 @@
-﻿#include "PlanetComponent.h"
+﻿#include <d3dcompiler.h>
+
+#include "PlanetComponent.h"
 #include "Game.h"
 #include "DisplayWin32.h"
-#include <d3dcompiler.h>
-
-using namespace DirectX;
+#include "CameraComponent.h"
 
 PlanetComponent::~PlanetComponent() {
     DestroyResources();
 }
 
 void PlanetComponent::Initialize() {
+    using namespace DirectX;
     Microsoft::WRL::ComPtr<ID3DBlob> vsBlob, psBlob;
     D3DCompileFromFile(L"./Shaders/MyVeryFirstShader.hlsl", nullptr, nullptr, "VSMain", "vs_5_0", D3DCOMPILE_DEBUG, 0, &vsBlob, nullptr);
     D3DCompileFromFile(L"./Shaders/MyVeryFirstShader.hlsl", nullptr, nullptr, "PSMain", "ps_5_0", D3DCOMPILE_DEBUG, 0, &psBlob, nullptr);
@@ -57,6 +58,8 @@ void PlanetComponent::Update() {
 }
 
 void PlanetComponent::Draw() {
+    using namespace DirectX;
+
     UINT stride = 16, offset = 0; // 16 bytes because we only send POSITION now
     game->Context->RSSetState(rastState.Get());
     game->Context->IASetInputLayout(layout.Get());
@@ -66,9 +69,8 @@ void PlanetComponent::Draw() {
     game->Context->VSSetShader(vertexShader.Get(), nullptr, 0);
     game->Context->PSSetShader(pixelShader.Get(), nullptr, 0);
 
-    // Camera setup
-    XMMATRIX view = XMMatrixLookAtLH(XMVectorSet(0.0f, 15.0f, -20.0f, 0.0f), XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f), XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f));
-    XMMATRIX proj = XMMatrixPerspectiveFovLH(XM_PIDIV4, (float)game->Display->ClientWidth / (float)game->Display->ClientHeight, 0.01f, 100.0f);
+    XMMATRIX view = game->MainCamera->GetViewMatrix();
+    XMMATRIX proj = game->MainCamera->GetProjectionMatrix();
 
     ConstantBufferData cb;
     worldMatrix = XMMatrixTranslation(2.0f, 0.0f, 0.0f);
@@ -85,10 +87,6 @@ void PlanetComponent::Draw() {
 void PlanetComponent::DestroyResources() {
     layout.Reset();   pixelShader.Reset(); vertexShader.Reset();
     vertices.Reset(); indices.Reset();     constantBuffer.Reset(); rastState.Reset();
-}
-
-void PlanetComponent::Reload() {
-
 }
 
 Vector2 PlanetComponent::GetPosition()

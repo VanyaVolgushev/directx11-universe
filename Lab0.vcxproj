@@ -127,6 +127,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\CameraSwitcher.cpp" />
     <ClCompile Include="src\CameraComponent.cpp" />
     <ClCompile Include="src\FPSCam.cpp" />
     <ClCompile Include="src\Delegates.cpp">
@@ -154,6 +155,7 @@
     <ClCompile Include="src\TriangleComponent.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\CameraSwitcher.h" />
     <ClInclude Include="src\CameraComponent.h" />
     <ClInclude Include="src\FPSCam.h" />
     <ClInclude Include="src\Delegates.h">

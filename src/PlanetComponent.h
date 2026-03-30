@@ -1,5 +1,5 @@
 #pragma once
-#include "SimpleMath.h"
+#include <SimpleMath.h>
 #include <wrl.h>
 #include <d3d11.h>
 
@@ -23,7 +23,6 @@ public:
     void Update() override;
     void Draw() override;
     void DestroyResources() override;
-    void Reload() override;
 
     //  Other
     Vector2 GetPosition();

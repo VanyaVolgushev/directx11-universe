@@ -1,7 +1,13 @@
 #include "FPSCam.h"
 
-FPSCam::~FPSCam() {
+DirectX::XMMATRIX FPSCam::GetViewMatrix()
+{
+	return DirectX::XMMATRIX();
+}
 
+DirectX::XMMATRIX FPSCam::GetProjectionMatrix()
+{
+	return DirectX::XMMATRIX();
 }
 
 void FPSCam::Initialize() {
@@ -13,7 +19,7 @@ void FPSCam::Update() {
 }
 
 void FPSCam::Draw() {
-	// do nothing, meant to be invisible
+	// don't draw self for now
 }
 
 void FPSCam::DestroyResources() {

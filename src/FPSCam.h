@@ -1,14 +1,15 @@
 #pragma once
-#include "SimpleMath.h"
 
-#include "GameComponent.h"
+#include "CameraComponent.h"
 
-using namespace DirectX::SimpleMath;
-class FPSCam : public GameComponent
+class FPSCam : public CameraComponent
 {
 public:
-    FPSCam(Game* game) : GameComponent(game) {}
-    ~FPSCam();
+    FPSCam(Game* game) : CameraComponent(game) {}
+
+    // CameraComponent interface implementation
+    DirectX::XMMATRIX GetViewMatrix() override;
+    DirectX::XMMATRIX GetProjectionMatrix() override;
 
     //  Gamecomponent interface implementation
     void Initialize() override;
