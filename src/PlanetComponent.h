@@ -1,40 +1,48 @@
 #pragma once
-#include <SimpleMath.h>
+#include <directxmath.h>
 #include <wrl.h>
 #include <d3d11.h>
+#include <vector>
 
 #include "GameComponent.h"
 
-using namespace DirectX::SimpleMath;
+// Enum to select the rendering shape
+enum class PlanetShape { Box, Sphere };
+
 class PlanetComponent : public GameComponent
 {
 public:
-    PlanetComponent(Game* game, float orbitRadius, float angularSpeed, float radius, DirectX::XMFLOAT4 color) :
-        GameComponent(game),
-        orbitRadius(orbitRadius),
-        angularSpeed(angularSpeed),
-        radius(radius),
-        color(color) {}
+    PlanetComponent(Game* game,
+        PlanetComponent* parent,
+        float orbitRadius,
+        float angularSpeed,
+        float radius,
+        DirectX::XMFLOAT4 color,
+        PlanetShape shape = PlanetShape::Sphere);
 
     ~PlanetComponent();
 
-    //  GameComponent interface implementation
+    // GameComponent interface implementation
     void Initialize() override;
     void Update() override;
     void Draw() override;
     void DestroyResources() override;
 
-    //  Other
-    Vector2 GetPosition();
+    // Get the absolute world position of this planet
+    DirectX::XMFLOAT3 GetPosition() const;
 
 private:
-    float orbitRadius = 0;
-    float angularSpeed = 0;
-    float radius = 0;
+    PlanetComponent* parent; // If null, orbits the center of the world
 
-    // Rendering
-    DirectX::XMFLOAT4 color = { 1.0f, 1.0f, 1.0f, 1.0f };
-    DirectX::XMMATRIX worldMatrix = DirectX::XMMATRIX();
+    float orbitRadius;
+    float angularSpeed;
+    float radius;
+    DirectX::XMFLOAT4 color;
+    PlanetShape shape;
+
+    DirectX::XMFLOAT3 currentPosition;
+    DirectX::XMMATRIX worldMatrix;
+    UINT indexCount;
 
     __declspec(align(16))
         struct ConstantBufferData {
@@ -50,4 +58,3 @@ private:
     Microsoft::WRL::ComPtr<ID3D11Buffer> constantBuffer;
     Microsoft::WRL::ComPtr<ID3D11RasterizerState> rastState;
 };
-
