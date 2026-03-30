@@ -1,6 +1,5 @@
 #include "DisplayWin32.h"
 
-// Forward declaration for the global WndProc
 extern LRESULT CALLBACK GlobalWndProc(HWND hwnd, UINT umessage, WPARAM wparam, LPARAM lparam);
 
 DisplayWin32::DisplayWin32(LPCWSTR applicationName, HINSTANCE hInst, int screenWidth, int screenHeight)

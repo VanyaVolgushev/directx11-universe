@@ -8,13 +8,14 @@
 class DisplayWin32;
 class InputDevice;
 class GameComponent;
+class CameraComponent;
 
 class Game
 {
 public:
-    Microsoft::WRL::ComPtr<ID3D11Texture2D> backBuffer;
+    Microsoft::WRL::ComPtr<ID3D11DepthStencilView> DepthView;
+    Microsoft::WRL::ComPtr<ID3D11Texture2D> BackBuffer;
     Microsoft::WRL::ComPtr<ID3D11DeviceContext> Context;
-    void* DebugAnnotation = nullptr; // Reserved/Placeholder
     Microsoft::WRL::ComPtr<ID3D11Device> Device;
     HINSTANCE Instance;
     LPCWSTR Name;
@@ -28,6 +29,7 @@ public:
 
     DisplayWin32* Display = nullptr;
     InputDevice* InputDevice = nullptr;
+    CameraComponent* MainCamera = nullptr;
     std::vector<GameComponent*> Components;
 
     bool isExitRequested = false;
@@ -48,6 +50,6 @@ public:
     LRESULT MessageHandler(HWND hwnd, UINT umessage, WPARAM wparam, LPARAM lparam);
 
 private:
-    void CreateBackBuffer();
+    void CreateBuffers();
     void DestroyResources();
 };

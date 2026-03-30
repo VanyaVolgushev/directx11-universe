@@ -9,7 +9,6 @@
 #pragma comment(lib, "d3dcompiler.lib")
 #pragma comment(lib, "dxguid.lib")
 
-// Global WndProc hook
 LRESULT CALLBACK GlobalWndProc(HWND hwnd, UINT umessage, WPARAM wparam, LPARAM lparam)
 {
     Game* game = reinterpret_cast<Game*>(GetWindowLongPtr(hwnd, GWLP_USERDATA));
@@ -41,7 +40,7 @@ Game::~Game()
 void Game::Initialize()
 {
     PrepareResources();
-    CreateBackBuffer();
+    CreateBuffers();
 
     InputDevice = new class InputDevice(this);
 
@@ -74,10 +73,34 @@ void Game::PrepareResources()
         &swapDesc, &SwapChain, &Device, nullptr, &Context);
 }
 
-void Game::CreateBackBuffer()
+// Inside Game.cpp
+void Game::CreateBuffers()
 {
-    SwapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), (void**)&backBuffer);
-    Device->CreateRenderTargetView(backBuffer.Get(), nullptr, &RenderView);
+    SwapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), (void**)&BackBuffer);
+    Device->CreateRenderTargetView(BackBuffer.Get(), nullptr, &RenderView);
+
+    D3D11_TEXTURE2D_DESC depthDesc = {};
+    depthDesc.Width = Display->ClientWidth;
+    depthDesc.Height = Display->ClientHeight;
+    depthDesc.MipLevels = 1;
+    depthDesc.ArraySize = 1;
+    depthDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
+    depthDesc.SampleDesc.Count = 1;
+    depthDesc.Usage = D3D11_USAGE_DEFAULT;
+    depthDesc.BindFlags = D3D11_BIND_DEPTH_STENCIL;
+
+    Microsoft::WRL::ComPtr<ID3D11Texture2D> depthStencil;
+    Device->CreateTexture2D(&depthDesc, nullptr, &depthStencil);
+    Device->CreateDepthStencilView(depthStencil.Get(), nullptr, &DepthView);
+}
+
+void Game::RestoreTargets()
+{
+    // --- UPDATED: Bind and clear DepthView alongside RenderView ---
+    Context->OMSetRenderTargets(1, RenderView.GetAddressOf(), DepthView.Get());
+    float color[] = { 0.05f, 0.05f, 0.1f, 1.0f }; // Dark space background
+    Context->ClearRenderTargetView(RenderView.Get(), color);
+    Context->ClearDepthStencilView(DepthView.Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 }
 
 void Game::DestroyResources()
@@ -87,7 +110,7 @@ void Game::DestroyResources()
     }
     RenderView.Reset();
     RenderSRV.Reset();
-    backBuffer.Reset();
+    BackBuffer.Reset();
     SwapChain.Reset();
     Context.Reset();
     Device.Reset();
@@ -151,14 +174,6 @@ void Game::PrepareFrame()
     viewport.MaxDepth = 1.0f;
 
     Context->RSSetViewports(1, &viewport);
-}
-
-void Game::RestoreTargets()
-{
-    Context->OMSetRenderTargets(1, RenderView.GetAddressOf(), nullptr);
-
-    float color[] = { TotalTime - floor(TotalTime), 0.1f, 0.1f, 1.0f }; // Fancy color pulsing
-    Context->ClearRenderTargetView(RenderView.Get(), color);
 }
 
 void Game::Draw()

@@ -5,7 +5,7 @@
 #include "Keys.h"
 #include "Delegates.h"
 
-class Game; // Forward declaration
+class Game;
 
 class InputDevice
 {

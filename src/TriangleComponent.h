@@ -14,7 +14,7 @@ private:
     Microsoft::WRL::ComPtr<ID3D11VertexShader> vertexShader;
     Microsoft::WRL::ComPtr<ID3DBlob> vertexShaderByteCode;
     Microsoft::WRL::ComPtr<ID3D11Buffer> vertices;
-    Microsoft::WRL::ComPtr<ID3D11Buffer> indices; // implied requirement for draw indexed
+    Microsoft::WRL::ComPtr<ID3D11Buffer> indices;
 
     DirectX::XMFLOAT4 points[8];
 
