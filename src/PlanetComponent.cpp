@@ -73,7 +73,8 @@ void PlanetComponent::Draw() {
     XMMATRIX proj = game->MainCamera->GetProjectionMatrix();
 
     ConstantBufferData cb;
-    worldMatrix = XMMatrixTranslation(2.0f, 0.0f, 0.0f);
+
+    worldMatrix = XMMatrixTranslation(0.0f, 0.0f, 0.0f);
     cb.WVP = XMMatrixTranspose(worldMatrix * view * proj);
     cb.Color = color;
 
