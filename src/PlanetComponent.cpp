@@ -73,7 +73,6 @@ void PlanetComponent::Draw() {
     XMMATRIX proj = game->MainCamera->GetProjectionMatrix();
 
     ConstantBufferData cb;
-
     worldMatrix = XMMatrixTranslation(0.0f, 0.0f, 0.0f);
     cb.WVP = XMMatrixTranspose(worldMatrix * view * proj);
     cb.Color = color;
@@ -82,7 +81,7 @@ void PlanetComponent::Draw() {
     game->Context->VSSetConstantBuffers(0, 1, constantBuffer.GetAddressOf());
     game->Context->PSSetConstantBuffers(0, 1, constantBuffer.GetAddressOf());
 
-    game->Context->DrawIndexed(36, 0, 0); // Draw the box!
+    game->Context->DrawIndexed(36, 0, 0);
 }
 
 void PlanetComponent::DestroyResources() {

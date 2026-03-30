@@ -3,9 +3,9 @@
 #include "InputDevice.h"
 #include <directxmath.h>
 
-class FPSCam : public CameraComponent {
+class IsometricCam : public CameraComponent {
 public:
-    FPSCam(Game* game);
+    IsometricCam(Game* game, float initialViewWidth = 3.0f);
 
     DirectX::XMMATRIX GetViewMatrix() override;
     DirectX::XMMATRIX GetProjectionMatrix() override;
@@ -14,10 +14,10 @@ public:
     void Update() override;
 
 private:
-    DirectX::XMFLOAT3 position;
-    float yaw;
+    float viewWidth;
     float pitch;
-    float moveSpeed;
+    float yaw;
+    float zoomSpeed;
     float mouseSensitivity;
     float prevTotalTime;
 

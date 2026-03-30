@@ -5,7 +5,7 @@
 #include <algorithm>
 
 FPSCam::FPSCam(Game* game) : CameraComponent(game),
-position(0.0f, 15.0f, -20.0f),
+position(0.0f, 0.0f, 0.0f),
 yaw(0.0f),
 pitch(0.0f),
 moveSpeed(10.0f),
@@ -18,6 +18,7 @@ void FPSCam::Initialize() {
 }
 
 void FPSCam::Update() {
+    if (game->MainCamera != this) return;
     using namespace DirectX;
 
     // Calculate delta time
@@ -52,8 +53,10 @@ void FPSCam::OnMouseMove(const InputDevice::MouseMoveEventArgs& args) {
         yaw += args.Offset.x * mouseSensitivity;
         pitch += args.Offset.y * mouseSensitivity;
 
-        // Prevent camera from flipping over by clamping pitch
-        pitch = max(-1.5f, min(1.5f, pitch));
+        // Clamp pitch to avoid gimbal lock
+        pitch = max(-DirectX::XM_PIDIV2 + 0.01f,
+                min(DirectX::XM_PIDIV2 - 0.01f,
+                    pitch));
     }
 }
 
@@ -72,7 +75,3 @@ DirectX::XMMATRIX FPSCam::GetProjectionMatrix() {
     float aspect = (float)game->Display->ClientWidth / (float)game->Display->ClientHeight;
     return XMMatrixPerspectiveFovLH(XM_PIDIV4, aspect, 0.01f, 1000.0f);
 }
-
-void FPSCam::Draw() {} // Cameras don't draw themselves
-void FPSCam::DestroyResources() {}
-void FPSCam::Reload() {}

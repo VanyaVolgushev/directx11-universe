@@ -127,6 +127,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\IsometricCam.cpp" />
+    <ClCompile Include="src\OrbiterCam.cpp" />
     <ClCompile Include="src\CameraSwitcher.cpp" />
     <ClCompile Include="src\CameraComponent.cpp" />
     <ClCompile Include="src\FPSCam.cpp" />
@@ -155,6 +157,8 @@
     <ClCompile Include="src\TriangleComponent.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\IsometricCam.h" />
+    <ClInclude Include="src\OrbiterCam.h" />
     <ClInclude Include="src\CameraSwitcher.h" />
     <ClInclude Include="src\CameraComponent.h" />
     <ClInclude Include="src\FPSCam.h" />
