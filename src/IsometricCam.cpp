@@ -43,7 +43,7 @@ void IsometricCam::OnMouseMove(const InputDevice::MouseMoveEventArgs& args) {
     }
 }
 
-DirectX::XMMATRIX IsometricCam::GetViewMatrix() {
+DirectX::XMMATRIX IsometricCam::GetViewMatrix() const {
     using namespace DirectX;
     float distance = 100.0f;
     XMMATRIX rot = XMMatrixRotationRollPitchYaw(pitch, yaw, 0.0f);
@@ -53,7 +53,7 @@ DirectX::XMMATRIX IsometricCam::GetViewMatrix() {
     return XMMatrixLookAtLH(pos, XMVectorZero(), up);
 }
 
-DirectX::XMMATRIX IsometricCam::GetProjectionMatrix() {
+DirectX::XMMATRIX IsometricCam::GetProjectionMatrix() const {
     using namespace DirectX;
     float aspect = (float)game->Display->ClientWidth / (float)game->Display->ClientHeight;
     float viewHeight = viewWidth / aspect;

@@ -7,8 +7,8 @@ class FPSCam : public CameraComponent {
 public:
     FPSCam(Game* game);
 
-    DirectX::XMMATRIX GetViewMatrix() override;
-    DirectX::XMMATRIX GetProjectionMatrix() override;
+    DirectX::XMMATRIX GetViewMatrix() const override;
+    DirectX::XMMATRIX GetProjectionMatrix() const override;
 
     void Initialize() override;
     void Update() override;

@@ -9,6 +9,6 @@ class CameraComponent : public GameComponent
 {
 public:
 	CameraComponent(Game* game) : GameComponent(game) {};
-	virtual DirectX::XMMATRIX GetViewMatrix() = 0;
-	virtual DirectX::XMMATRIX GetProjectionMatrix() = 0;
+	virtual DirectX::XMMATRIX GetViewMatrix() const = 0;
+	virtual DirectX::XMMATRIX GetProjectionMatrix() const = 0;
 };

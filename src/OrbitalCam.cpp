@@ -39,26 +39,29 @@ void OrbitalCam::OnMouseMove(const InputDevice::MouseMoveEventArgs& args) {
     }
 }
 
-DirectX::XMMATRIX OrbitalCam::GetViewMatrix() {
+DirectX::XMMATRIX OrbitalCam::GetViewMatrix() const {
     using namespace DirectX;
 
+    // Get parent's world position (fallback to origin if none)
     XMVECTOR targetPos = XMVectorZero();
+    XMMATRIX parentRot = XMMatrixIdentity();
     if (parent) {
-        XMFLOAT3 pos = parent->GetPosition();
+        XMFLOAT3 pos = parent->GetPosition();        
+        XMFLOAT3 rot = parent->GetRotation();        
         targetPos = XMLoadFloat3(&pos);
+        parentRot = XMMatrixRotationRollPitchYaw(rot.x, rot.y, rot.z);
     }
 
-    XMMATRIX rot = XMMatrixRotationRollPitchYaw(pitch, yaw, 0.0f);
-    XMVECTOR offset = XMVector3TransformCoord(XMVectorSet(0.0f, 0.0f, -radius, 0.0f), rot);
-
-    XMVECTOR cameraPos = targetPos + offset;
-
+    XMMATRIX camRot = XMMatrixRotationRollPitchYaw(pitch, yaw, 0.0f);
+    XMVECTOR localOffset = XMVector3TransformCoord(XMVectorSet(0.0f, 0.0f, -radius, 0.0f), camRot);
+    XMVECTOR worldOffset = XMVector3TransformCoord(localOffset, parentRot);
+    XMVECTOR cameraPos = targetPos + worldOffset;
     XMVECTOR up = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
 
     return XMMatrixLookAtLH(cameraPos, targetPos, up);
 }
 
-DirectX::XMMATRIX OrbitalCam::GetProjectionMatrix() {
+DirectX::XMMATRIX OrbitalCam::GetProjectionMatrix() const {
     using namespace DirectX;
     float aspect = (float)game->Display->ClientWidth / (float)game->Display->ClientHeight;
     return XMMatrixPerspectiveFovLH(XM_PIDIV4, aspect, 0.01f, 1000.0f);

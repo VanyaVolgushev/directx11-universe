@@ -60,7 +60,7 @@ void FPSCam::OnMouseMove(const InputDevice::MouseMoveEventArgs& args) {
     }
 }
 
-DirectX::XMMATRIX FPSCam::GetViewMatrix() {
+DirectX::XMMATRIX FPSCam::GetViewMatrix() const {
     using namespace DirectX;
     XMVECTOR pos = XMLoadFloat3(&position);
     XMMATRIX rot = XMMatrixRotationRollPitchYaw(pitch, yaw, 0.0f);
@@ -70,7 +70,7 @@ DirectX::XMMATRIX FPSCam::GetViewMatrix() {
     return XMMatrixLookAtLH(pos, pos + forward, up);
 }
 
-DirectX::XMMATRIX FPSCam::GetProjectionMatrix() {
+DirectX::XMMATRIX FPSCam::GetProjectionMatrix() const {
     using namespace DirectX;
     float aspect = (float)game->Display->ClientWidth / (float)game->Display->ClientHeight;
     return XMMatrixPerspectiveFovLH(XM_PIDIV4, aspect, 0.01f, 1000.0f);

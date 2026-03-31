@@ -6,8 +6,11 @@
 #include "DisplayWin32.h"
 #include "CameraComponent.h"
 
+#define ORBIT_DISTANCE_MULT 4
+#define ANGULAR_SPEED_MULT 0.02f
+
 PlanetComponent::PlanetComponent(Game* game, PlanetComponent* parent, float orbitRadius, float angularSpeed, float radius, DirectX::XMFLOAT4 color, PlanetShape shape, float rotationSpeed)
-    : GameComponent(game), parent(parent), orbitRadius(orbitRadius), angularSpeed(angularSpeed), radius(radius), color(color), shape(shape), currentPosition(0, 0, 0), indexCount(0), rotationSpeed(rotationSpeed)
+    : GameComponent(game), parent(parent), orbitRadius(orbitRadius * ORBIT_DISTANCE_MULT), angularSpeed(angularSpeed * ANGULAR_SPEED_MULT), radius(radius), color(color), shape(shape), currentPosition(0, 0, 0), currentRotation(0, 0, 0), indexCount(0), rotationSpeed(rotationSpeed* ANGULAR_SPEED_MULT)
 {
     worldMatrix = DirectX::XMMatrixIdentity();
 }
@@ -167,4 +170,8 @@ void PlanetComponent::DestroyResources() {
 
 DirectX::XMFLOAT3 PlanetComponent::GetPosition() const {
     return currentPosition;
+}
+
+DirectX::XMFLOAT3 PlanetComponent::GetRotation() const {
+    return currentRotation;
 }

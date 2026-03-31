@@ -7,8 +7,8 @@ class IsometricCam : public CameraComponent {
 public:
     IsometricCam(Game* game, float initialViewWidth = 3.0f);
 
-    DirectX::XMMATRIX GetViewMatrix() override;
-    DirectX::XMMATRIX GetProjectionMatrix() override;
+    DirectX::XMMATRIX GetViewMatrix() const override;
+    DirectX::XMMATRIX GetProjectionMatrix() const override;
 
     void Initialize() override;
     void Update() override;

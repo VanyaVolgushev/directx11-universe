@@ -29,8 +29,10 @@ public:
     void Draw() override;
     void DestroyResources() override;
 
-    // Get the absolute world position of this planet
+    // Get the absolute world position
     DirectX::XMFLOAT3 GetPosition() const;
+    // Get the absolute world rotation
+    DirectX::XMFLOAT3 GetRotation() const;
 
 private:
     PlanetComponent* parent; // If null, orbits the center of the world
