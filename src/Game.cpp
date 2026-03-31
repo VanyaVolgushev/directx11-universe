@@ -143,9 +143,9 @@ void Game::Exit()
 void Game::UpdateInternal()
 {
     auto curTime = std::chrono::steady_clock::now();
-    float deltaTime = std::chrono::duration_cast<std::chrono::microseconds>(curTime - PrevTime).count() / 1000000.0f;
+    DeltaTime = std::chrono::duration_cast<std::chrono::microseconds>(curTime - PrevTime).count() / 1000000.0f;
     PrevTime = curTime;
-    TotalTime += deltaTime;
+    TotalTime += DeltaTime;
 
     Update();
 }

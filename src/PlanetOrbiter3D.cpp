@@ -4,7 +4,7 @@
 #include "PlanetComponent.h"
 #include "Game.h"
 #include "FPSCam.h"
-#include "OrbiterCam.h"
+#include "OrbitalCam.h"
 #include "IsometricCam.h"
 #include "CameraSwitcher.h"
 
@@ -25,6 +25,7 @@ int main()
     game.Components.push_back(earth);
     auto moon = new PlanetComponent(&game, earth, 2.0f, 4.0f, 0.3f, { 0.7f, 0.7f, 0.7f, 1.0f }, PlanetShape::Box, -4.0f);
     game.Components.push_back(moon);
+    game.Components.push_back(new OrbitalCam(&game, 50.0f, earth)); // Also add a camera to earth
 
     auto mars = new PlanetComponent(&game, sun, 19.0f, 0.8f, 0.7f, { 0.8f, 0.3f, 0.1f, 1.0f }, PlanetShape::Sphere, 1.9f);
     game.Components.push_back(mars);
@@ -89,10 +90,11 @@ int main()
     auto charon = new PlanetComponent(&game, pluto, 0.8f, 2.5f, 0.15f, { 0.6f, 0.6f, 0.6f, 1.0f }, PlanetShape::Box, 0.2f);
     game.Components.push_back(charon);
 
-
-    game.Components.push_back(new FPSCam(&game));
-    game.Components.push_back(new OrbiterCam(&game, 80.0f));
     game.Components.push_back(new IsometricCam(&game, 90.0f));
+    game.Components.push_back(new FPSCam(&game));
+    game.Components.push_back(new OrbitalCam(&game, 80.0f));
+    game.Components.push_back(new OrbitalCam(&game, 80.0f));
+
     game.Components.push_back(new CameraSwitcher(&game));
     game.Initialize();
     game.Run();

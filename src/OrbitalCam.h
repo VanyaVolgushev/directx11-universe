@@ -1,11 +1,14 @@
 #pragma once
-#include "CameraComponent.h"
-#include "InputDevice.h"
 #include <directxmath.h>
 
-class OrbiterCam : public CameraComponent {
+#include "InputDevice.h"
+#include "CameraComponent.h"
+
+class PlanetComponent;
+
+class OrbitalCam : public CameraComponent {
 public:
-    OrbiterCam(Game* game, float initialRadius = 3.0f);
+    OrbitalCam(Game* game, float initialRadius = 3.0f, PlanetComponent* parent = nullptr);
 
     DirectX::XMMATRIX GetViewMatrix() override;
     DirectX::XMMATRIX GetProjectionMatrix() override;
@@ -20,6 +23,7 @@ private:
     float zoomSpeed;
     float mouseSensitivity;
     float prevTotalTime;
+    PlanetComponent* parent;
 
     void OnMouseMove(const InputDevice::MouseMoveEventArgs& args);
 };

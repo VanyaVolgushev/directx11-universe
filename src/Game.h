@@ -26,6 +26,7 @@ public:
     std::chrono::time_point<std::chrono::steady_clock> StartTime;
     Microsoft::WRL::ComPtr<IDXGISwapChain> SwapChain;
     float TotalTime = 0.0f;
+    float DeltaTime = 0.0f;
 
     DisplayWin32* Display = nullptr;
     InputDevice* InputDevice = nullptr;
