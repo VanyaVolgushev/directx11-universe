@@ -8,9 +8,8 @@ IsometricCam::IsometricCam(Game* game, float initialViewWidth)
     : CameraComponent(game), viewWidth(initialViewWidth),
     zoomSpeed(5.0f), mouseSensitivity(0.005f), prevTotalTime(0.0f) {
 
-    // Start with a true isometric angle
-    pitch = 0.6154729f; // asin(1/sqrt(3)) ≈ 35.264 degrees
-    yaw = DirectX::XM_PIDIV4; // 45 degrees
+    pitch = 0.6154729f; // asin(1/sqrt(3))
+    yaw = DirectX::XM_PIDIV4;
 }
 
 void IsometricCam::Initialize() {
@@ -46,7 +45,6 @@ void IsometricCam::OnMouseMove(const InputDevice::MouseMoveEventArgs& args) {
 
 DirectX::XMMATRIX IsometricCam::GetViewMatrix() {
     using namespace DirectX;
-    // Set distance far away to guarantee models fit inside the zNear and zFar planes
     float distance = 100.0f;
     XMMATRIX rot = XMMatrixRotationRollPitchYaw(pitch, yaw, 0.0f);
     XMVECTOR pos = XMVector3TransformCoord(XMVectorSet(0.0f, 0.0f, -distance, 0.0f), rot);
