@@ -54,6 +54,9 @@
     <ClCompile Include="src\IsometricCam.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\MeshRenderer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\GameComponent.h">
@@ -95,6 +98,15 @@
     <ClInclude Include="src\IsometricCam.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\MeshRenderer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Helpers\Vertex.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Helpers\LoadFBX.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Natvis Include="src\Delegates.natvis">
@@ -104,5 +116,6 @@
   <ItemGroup>
     <None Include="packages.config" />
     <None Include="Shaders\MyVeryFirstShader.hlsl" />
+    <None Include="Shaders\TexturedShader.hlsl" />
   </ItemGroup>
 </Project>

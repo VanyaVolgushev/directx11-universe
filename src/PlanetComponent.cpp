@@ -6,8 +6,8 @@
 #include "DisplayWin32.h"
 #include "CameraComponent.h"
 
-#define ORBIT_DISTANCE_MULT 4
-#define ANGULAR_SPEED_MULT 0.02f
+#define ORBIT_DISTANCE_MULT 1.3
+#define ANGULAR_SPEED_MULT 0.4f
 
 PlanetComponent::PlanetComponent(Game* game, PlanetComponent* parent, float orbitRadius, float angularSpeed, float radius, DirectX::XMFLOAT4 color, PlanetShape shape, float rotationSpeed)
     : GameComponent(game), parent(parent), orbitRadius(orbitRadius * ORBIT_DISTANCE_MULT), angularSpeed(angularSpeed * ANGULAR_SPEED_MULT), radius(radius), color(color), shape(shape), currentPosition(0, 0, 0), currentRotation(0, 0, 0), indexCount(0), rotationSpeed(rotationSpeed* ANGULAR_SPEED_MULT)

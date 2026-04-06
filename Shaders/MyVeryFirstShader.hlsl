@@ -1,6 +1,6 @@
 cbuffer ConstantBuffer : register(b0)
 {
-    matrix WVP; // World * View * Projection
+    matrix WVP;
     float4 PlanetColor;
 }
 

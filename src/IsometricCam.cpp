@@ -1,8 +1,9 @@
-﻿#include "IsometricCam.h"
+﻿#include <algorithm>
+
+#include "IsometricCam.h"
 #include "Game.h"
 #include "InputDevice.h"
 #include "DisplayWin32.h"
-#include <algorithm>
 
 IsometricCam::IsometricCam(Game* game, float initialViewWidth)
     : CameraComponent(game), viewWidth(initialViewWidth),
@@ -37,8 +38,8 @@ void IsometricCam::OnMouseMove(const InputDevice::MouseMoveEventArgs& args) {
         yaw += args.Offset.x * mouseSensitivity;
         pitch += args.Offset.y * mouseSensitivity;
 
-        pitch = max(-DirectX::XM_PIDIV2 + 0.01f,
-                min(DirectX::XM_PIDIV2 - 0.01f,
+        pitch = std::max(-DirectX::XM_PIDIV2 + 0.01f,
+                std::min(DirectX::XM_PIDIV2 - 0.01f,
                     pitch));
     }
 }

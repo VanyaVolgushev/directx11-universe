@@ -7,6 +7,8 @@
 #include "OrbitalCam.h"
 #include "IsometricCam.h"
 #include "CameraSwitcher.h"
+#include "MeshRenderer.h"
+#include "Helpers/LoadFBX.h"
 
 int main()
 {
@@ -21,7 +23,7 @@ int main()
     auto venus = new PlanetComponent(&game, sun, 9.0f, 1.8f, 0.8f, { 0.9f, 0.5f, 0.2f, 1.0f }, PlanetShape::Sphere, -0.1f);
     game.Components.push_back(venus);
 
-    auto earth = new PlanetComponent(&game, sun, 14.0f, 1.0f, 1.0f, { 0.2f, 0.4f, 0.9f, 1.0f }, PlanetShape::Sphere, 2.0f);
+    auto earth = new PlanetComponent(&game, sun, 14.0f, 1.0f, 1.0f, { 1.0f, 1.0f, 0.9f, 1.0f }, PlanetShape::Sphere, 2.0f);
     game.Components.push_back(earth);
     auto moon = new PlanetComponent(&game, earth, 2.0f, 4.0f, 0.3f, { 0.7f, 0.7f, 0.7f, 1.0f }, PlanetShape::Box, -4.0f);
     game.Components.push_back(moon);
@@ -96,6 +98,51 @@ int main()
     game.Components.push_back(new OrbitalCam(&game, 80.0f));
 
     game.Components.push_back(new CameraSwitcher(&game));
+
+    // --- CREATE EARTH MESH---
+    {
+        std::vector<Vertex> fbxVertices;
+        std::vector<int> fbxIndices;
+
+        if (LoadFBX("D:\\CG_labs\\lab2\\Lab2\\Assets\\earth.obj", fbxVertices, fbxIndices)) {
+            MeshRenderer* fbxModel = new MeshRenderer(
+                &game,
+                earth,
+                fbxVertices,
+                fbxIndices,
+                L"./Assets/EarthTexture.jpeg",
+                L"./Shaders/TexturedShader.hlsl"
+            );
+            fbxModel->SetPosition(DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f));
+            fbxModel->SetScale(DirectX::XMFLOAT3(1.1f, 1.1f, 1.1f));
+
+            game.Components.push_back(fbxModel);
+        }
+    }
+
+    // --- CREATE EIFFEL TOWER MESH---
+    {
+        std::vector<Vertex> fbxVertices;
+        std::vector<int> fbxIndices;
+
+        if (LoadFBX("D:\\CG_labs\\lab2\\Lab2\\Assets\\StatueOfLiberty.obj", fbxVertices, fbxIndices)) {
+            MeshRenderer* fbxModel = new MeshRenderer(
+                &game,
+                earth,
+                fbxVertices,
+                fbxIndices,
+                L"./Assets/StatueOfLiberty.png",
+                L"./Shaders/TexturedShader.hlsl"
+            );
+            using namespace DirectX;
+            fbxModel->SetPosition(DirectX::XMFLOAT3(0.890f, 0.525f, -0.267f));
+            fbxModel->SetScale(DirectX::XMFLOAT3(0.001f, 0.001f, 0.001f));
+            fbxModel->SetRotation(DirectX::XMFLOAT3(0.0f + 1.57f, 0.92f + 2.0f, 3));
+
+            game.Components.push_back(fbxModel);
+        }
+    }
+
     game.Initialize();
     game.Run();
     std::cout << "Goodbye World!\n";

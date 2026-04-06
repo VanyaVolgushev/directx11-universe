@@ -35,7 +35,7 @@ void OrbitalCam::OnMouseMove(const InputDevice::MouseMoveEventArgs& args) {
         pitch += args.Offset.y * mouseSensitivity;
 
         // Clamp pitch to avoid gimbal lock
-        pitch = max(-DirectX::XM_PIDIV2 + 0.01f, min(DirectX::XM_PIDIV2 - 0.01f, pitch));
+        pitch = std::max(-DirectX::XM_PIDIV2 + 0.01f, std::min(DirectX::XM_PIDIV2 - 0.01f, pitch));
     }
 }
 
