@@ -9,13 +9,13 @@
 #include "GameComponent.h"
 #include "Helpers/Vertex.h"
 
-class PlanetComponent;
+class ITransformProvider;
 
 class MeshRenderer : public GameComponent
 {
 public:
     MeshRenderer(Game* game,
-                 PlanetComponent* parent,
+                 ITransformProvider* parent,
                  const std::vector<Vertex>& vertices,
                  const std::vector<int>& indices,
                  std::wstring texturePath = L"./Shaders/MyVeryFirstShader.hlsl",
@@ -38,7 +38,7 @@ public:
 private:
     void UpdateWorldMatrix();
 
-    PlanetComponent* parent;
+    ITransformProvider* parent;
 
     std::vector<Vertex> initVertices;
     std::vector<int> initIndices;

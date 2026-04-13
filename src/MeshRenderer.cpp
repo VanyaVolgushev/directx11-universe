@@ -5,7 +5,7 @@
 #include "PlanetComponent.h"
 
 MeshRenderer::MeshRenderer(Game* game,
-                           PlanetComponent* parent,
+                           ITransformProvider* parent,
                            const std::vector<Vertex>& vertices,
                            const std::vector<int>& indices,
                            std::wstring texturePath,
@@ -146,19 +146,18 @@ void MeshRenderer::UpdateWorldMatrix() {
 
     // Calculate Local Transform
     XMMATRIX localMatrix = XMMatrixScaling(scale.x, scale.y, scale.z) *
-        XMMatrixRotationY(rotation.y) *
-        XMMatrixRotationX(rotation.x) *
-        XMMatrixRotationZ(rotation.z) *
-        XMMatrixTranslation(position.x, position.y, position.z);
-
+                           XMMatrixRotationY(rotation.y) *
+                           XMMatrixRotationX(rotation.x) *
+                           XMMatrixRotationZ(rotation.z) *
+                           XMMatrixTranslation(position.x, position.y, position.z);
     if (parent) {
         DirectX::XMFLOAT3 pPos = parent->GetPosition();
         DirectX::XMFLOAT3 pRot = parent->GetRotation();
 
         XMMATRIX parentMatrix = XMMatrixRotationY(pRot.y) *
-            XMMatrixRotationX(pRot.x) *
-            XMMatrixRotationZ(pRot.z) *
-            XMMatrixTranslation(pPos.x, pPos.y, pPos.z);
+                                XMMatrixRotationX(pRot.x) *
+                                XMMatrixRotationZ(pRot.z) *
+                                XMMatrixTranslation(pPos.x, pPos.y, pPos.z);
 
         worldMatrix = localMatrix * parentMatrix;
     }

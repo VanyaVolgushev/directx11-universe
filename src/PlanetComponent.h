@@ -5,11 +5,12 @@
 #include <vector>
 
 #include "GameComponent.h"
+#include "ITransformProvider.h"
 
-// Enum to select the rendering shape
 enum class PlanetShape { Box, Sphere };
 
-class PlanetComponent : public GameComponent
+class PlanetComponent : public GameComponent,
+                        public ITransformProvider
 {
 public:
     PlanetComponent(Game* game,
@@ -29,10 +30,12 @@ public:
     void Draw() override;
     void DestroyResources() override;
 
-    // Get the absolute world position
-    DirectX::XMFLOAT3 GetPosition() const;
-    // Get the absolute world rotation
-    DirectX::XMFLOAT3 GetRotation() const;
+    // ITransformProvider interface implementation
+    DirectX::XMFLOAT3 GetPosition() const override;
+    DirectX::XMFLOAT3 GetRotation() const override;
+
+    // Other
+    float GetRadius() const { return radius; }
 
 private:
     PlanetComponent* parent; // If null, orbits the center of the world

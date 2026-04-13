@@ -127,6 +127,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\RollingSphereComponent.cpp" />
     <ClCompile Include="src\MeshRenderer.cpp" />
     <ClCompile Include="src\IsometricCam.cpp" />
     <ClCompile Include="src\OrbitalCam.cpp" />
@@ -155,10 +156,14 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
       <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</DeploymentContent>
     </ClCompile>
+    <ClCompile Include="src\StickyCollectibleComponent.cpp" />
+    <ClInclude Include="src\RollingSphereComponent.h" />
+    <ClInclude Include="src\ITransformProvider.h" />
     <ClInclude Include="src\Helpers\LoadFBX.h">
       <FileType>CppCode</FileType>
     </ClInclude>
     <ClCompile Include="src\TriangleComponent.cpp" />
+    <ClInclude Include="src\StickyCollectibleComponent.h" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Helpers\Vertex.h" />
