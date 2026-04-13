@@ -3,7 +3,7 @@
 
 #include "ITransformProvider.h"
 #include "Game.h"
-#include "Helpers/LoadFBX.h"
+#include "Helpers/LoadOBJ.h"
 #include "GameComponent/GameComponents.h"
 #include "GameComponent/PointLightComponent.h"
 
@@ -29,7 +29,7 @@ int main()
         std::vector<Vertex> fbxVertices;
         std::vector<int> fbxIndices;
 
-        if (LoadFBX("D:\\CG_labs\\lab2\\Lab2\\Assets\\earth.obj", fbxVertices, fbxIndices)) {
+        if (LoadOBJ("D:\\CG_labs\\lab2\\Lab2\\Assets\\earth.obj", fbxVertices, fbxIndices)) {
             MeshRenderer* fbxModel = new MeshRenderer(
                 &game,
                 earth,
@@ -59,7 +59,7 @@ int main()
         std::vector<Vertex> fbxVertices;
         std::vector<int> fbxIndices;
 
-        if (LoadFBX("D:\\CG_labs\\lab2\\Lab2\\Assets\\gorbino.obj", fbxVertices, fbxIndices)) {
+        if (LoadOBJ("D:\\CG_labs\\lab2\\Lab2\\Assets\\gorbino.obj", fbxVertices, fbxIndices)) {
             MeshRenderer* fbxModel = new MeshRenderer(
                 &game,
                 roller,
@@ -93,7 +93,7 @@ int main()
                 std::vector<Vertex> fbxVertices;
                 std::vector<int> fbxIndices;
 
-                if (LoadFBX("D:\\CG_labs\\lab2\\Lab2\\Assets\\StatueOfLiberty.obj", fbxVertices, fbxIndices)) {
+                if (LoadOBJ("D:\\CG_labs\\lab2\\Lab2\\Assets\\StatueOfLiberty.obj", fbxVertices, fbxIndices)) {
                     MeshRenderer* fbxModel = new MeshRenderer(
                         &game,
                         stickyPoint,
@@ -126,7 +126,7 @@ int main()
                 std::vector<Vertex> fbxVertices;
                 std::vector<int> fbxIndices;
 
-                if (LoadFBX("D:\\CG_labs\\lab2\\Lab2\\Assets\\EiffelTower.obj", fbxVertices, fbxIndices)) {
+                if (LoadOBJ("D:\\CG_labs\\lab2\\Lab2\\Assets\\EiffelTower.obj", fbxVertices, fbxIndices)) {
                     MeshRenderer* fbxModel = new MeshRenderer(
                         &game,
                         stickyPoint,
@@ -161,7 +161,7 @@ int main()
                 std::vector<Vertex> fbxVertices;
                 std::vector<int> fbxIndices;
 
-                if (LoadFBX("D:\\CG_labs\\lab2\\Lab2\\Assets\\Pisa.obj", fbxVertices, fbxIndices)) {
+                if (LoadOBJ("D:\\CG_labs\\lab2\\Lab2\\Assets\\Pisa.obj", fbxVertices, fbxIndices)) {
                     MeshRenderer* fbxModel = new MeshRenderer(
                         &game,
                         stickyPoint,

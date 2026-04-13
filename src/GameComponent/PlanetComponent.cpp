@@ -23,8 +23,8 @@ PlanetComponent::~PlanetComponent() {
 void PlanetComponent::Initialize() {
     using namespace DirectX;
     Microsoft::WRL::ComPtr<ID3DBlob> vsBlob, psBlob;
-    D3DCompileFromFile(L"./Shaders/MyVeryFirstShader.hlsl", nullptr, nullptr, "VSMain", "vs_5_0", D3DCOMPILE_DEBUG, 0, &vsBlob, nullptr);
-    D3DCompileFromFile(L"./Shaders/MyVeryFirstShader.hlsl", nullptr, nullptr, "PSMain", "ps_5_0", D3DCOMPILE_DEBUG, 0, &psBlob, nullptr);
+    D3DCompileFromFile(L"./Shaders/ColorShader.hlsl", nullptr, nullptr, "VSMain", "vs_5_0", D3DCOMPILE_DEBUG, 0, &vsBlob, nullptr);
+    D3DCompileFromFile(L"./Shaders/ColorShader.hlsl", nullptr, nullptr, "PSMain", "ps_5_0", D3DCOMPILE_DEBUG, 0, &psBlob, nullptr);
 
     game->Device->CreateVertexShader(vsBlob->GetBufferPointer(), vsBlob->GetBufferSize(), nullptr, &vertexShader);
     game->Device->CreatePixelShader(psBlob->GetBufferPointer(), psBlob->GetBufferSize(), nullptr, &pixelShader);
@@ -160,7 +160,6 @@ void PlanetComponent::Draw() {
     game->Context->VSSetShader(vertexShader.Get(), nullptr, 0);
     game->Context->PSSetShader(pixelShader.Get(), nullptr, 0);
 
-    // Don't draw if there's no camera configured
     if (!game->MainCamera) return;
 
     XMMATRIX view = game->MainCamera->GetViewMatrix();

@@ -162,12 +162,13 @@
     <ClInclude Include="src\GameComponent\GameComponents.h" />
     <ClInclude Include="src\GameComponent\RollingSphereComponent.h" />
     <ClInclude Include="src\ITransformProvider.h" />
-    <ClInclude Include="src\Helpers\LoadFBX.h">
+    <ClInclude Include="src\Helpers\LoadOBJ.h">
       <FileType>CppCode</FileType>
     </ClInclude>
     <ClCompile Include="src\GameComponent\TriangleComponent.cpp" />
     <ClInclude Include="src\GameComponent\StickyCollectibleComponent.h" />
     <ClInclude Include="src\LightData.h" />
+    <ClInclude Include="src\Helpers\GenerateSphere.h" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Helpers\Vertex.h" />
@@ -208,7 +209,7 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Shaders\MyVeryFirstShader.hlsl">
+    <None Include="Shaders\ColorShader.hlsl">
       <FileType>Document</FileType>
     </None>
   </ItemGroup>

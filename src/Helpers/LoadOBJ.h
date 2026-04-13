@@ -7,7 +7,7 @@
 
 #include "Vertex.h"
 
-static bool LoadFBX(const std::string& filePath, std::vector<Vertex>& outVertices, std::vector<int>& outIndices) {
+static bool LoadOBJ(const std::string& filePath, std::vector<Vertex>& outVertices, std::vector<int>& outIndices) {
     Assimp::Importer importer;
     // Read file and apply necessary DirectX conversions
     const aiScene* scene = importer.ReadFile(filePath,
