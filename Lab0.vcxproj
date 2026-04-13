@@ -127,6 +127,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\GameComponent\PointLightComponent.cpp" />
     <ClCompile Include="src\GameComponent\RollingSphereComponent.cpp" />
     <ClCompile Include="src\GameComponent\MeshRenderer.cpp" />
     <ClCompile Include="src\GameComponent\IsometricCam.cpp" />
@@ -157,6 +158,7 @@
       <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</DeploymentContent>
     </ClCompile>
     <ClCompile Include="src\GameComponent\StickyCollectibleComponent.cpp" />
+    <ClInclude Include="src\GameComponent\PointLightComponent.h" />
     <ClInclude Include="src\GameComponent\GameComponents.h" />
     <ClInclude Include="src\GameComponent\RollingSphereComponent.h" />
     <ClInclude Include="src\ITransformProvider.h" />
@@ -165,6 +167,7 @@
     </ClInclude>
     <ClCompile Include="src\GameComponent\TriangleComponent.cpp" />
     <ClInclude Include="src\GameComponent\StickyCollectibleComponent.h" />
+    <ClInclude Include="src\LightData.h" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Helpers\Vertex.h" />
@@ -219,6 +222,11 @@
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">4.0</ShaderModel>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Compute</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">4.0</ShaderModel>
+      <FileType>Document</FileType>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Shaders\TexturedPhongShader.hlsl">
       <FileType>Document</FileType>
     </None>
   </ItemGroup>

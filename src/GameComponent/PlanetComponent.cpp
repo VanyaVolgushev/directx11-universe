@@ -5,12 +5,13 @@
 #include "../Game.h"
 #include "../DisplayWin32.h"
 #include "CameraComponent.h"
+#include "../Helpers/Vertex.h"
 
 #define ORBIT_DISTANCE_MULT 1.3
 #define ANGULAR_SPEED_MULT 0.4f
 
-PlanetComponent::PlanetComponent(Game* game, PlanetComponent* parent, float orbitRadius, float angularSpeed, float radius, DirectX::XMFLOAT4 color, PlanetShape shape, float rotationSpeed)
-    : GameComponent(game), parent(parent), orbitRadius(orbitRadius * ORBIT_DISTANCE_MULT), angularSpeed(angularSpeed * ANGULAR_SPEED_MULT), radius(radius), color(color), shape(shape), currentPosition(0, 0, 0), currentRotation(0, 0, 0), indexCount(0), rotationSpeed(rotationSpeed* ANGULAR_SPEED_MULT)
+PlanetComponent::PlanetComponent(Game * game, PlanetComponent * parent, float orbitRadius, float angularSpeed, float radius, DirectX::XMFLOAT4 color, PlanetShape shape, float rotationSpeed)
+    : GameComponent(game), parent(parent), orbitRadius(orbitRadius* ORBIT_DISTANCE_MULT), angularSpeed(angularSpeed* ANGULAR_SPEED_MULT), radius(radius), color(color), shape(shape), currentPosition(0, 0, 0), currentRotation(0, 0, 0), indexCount(0), rotationSpeed(rotationSpeed* ANGULAR_SPEED_MULT)
 {
     worldMatrix = DirectX::XMMatrixIdentity();
 }
@@ -29,29 +30,37 @@ void PlanetComponent::Initialize() {
     game->Device->CreatePixelShader(psBlob->GetBufferPointer(), psBlob->GetBufferSize(), nullptr, &pixelShader);
 
     D3D11_INPUT_ELEMENT_DESC inputElements[] = {
-        {"POSITION", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0}
+        {"POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0},
+        {"TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0},
+        {"NORMAL",   0, DXGI_FORMAT_R32G32B32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0}
     };
-    game->Device->CreateInputLayout(inputElements, 1, vsBlob->GetBufferPointer(), vsBlob->GetBufferSize(), &layout);
+    game->Device->CreateInputLayout(inputElements, 3, vsBlob->GetBufferPointer(), vsBlob->GetBufferSize(), &layout);
 
-    std::vector<XMFLOAT4> verts;
+    std::vector<Vertex> verts;
     std::vector<int> inds;
 
     // Generate mesh based on chosen shape
     if (shape == PlanetShape::Box) {
-        // Unit box centered at 0,0,0
-        verts = {
-            {-1.0f, -1.0f, -1.0f, 1.0f}, {-1.0f,  1.0f, -1.0f, 1.0f},
-            { 1.0f,  1.0f, -1.0f, 1.0f}, { 1.0f, -1.0f, -1.0f, 1.0f},
-            {-1.0f, -1.0f,  1.0f, 1.0f}, {-1.0f,  1.0f,  1.0f, 1.0f},
-            { 1.0f,  1.0f,  1.0f, 1.0f}, { 1.0f, -1.0f,  1.0f, 1.0f}
-        };
+        // Unit box centered at 0,0,0 with normals and texcoords
+        Vertex v[8];
+        v[0].Position = { -1.0f, -1.0f, -1.0f }; v[0].Normal = { -1.0f, -1.0f, -1.0f }; v[0].TexCoord = { 0,0 };
+        v[1].Position = { -1.0f,  1.0f, -1.0f }; v[1].Normal = { -1.0f,  1.0f, -1.0f }; v[1].TexCoord = { 0,1 };
+        v[2].Position = { 1.0f,  1.0f, -1.0f }; v[2].Normal = { 1.0f,  1.0f, -1.0f }; v[2].TexCoord = { 1,1 };
+        v[3].Position = { 1.0f, -1.0f, -1.0f }; v[3].Normal = { 1.0f, -1.0f, -1.0f }; v[3].TexCoord = { 1,0 };
+        v[4].Position = { -1.0f, -1.0f,  1.0f }; v[4].Normal = { -1.0f, -1.0f,  1.0f }; v[4].TexCoord = { 0,0 };
+        v[5].Position = { -1.0f,  1.0f,  1.0f }; v[5].Normal = { -1.0f,  1.0f,  1.0f }; v[5].TexCoord = { 0,1 };
+        v[6].Position = { 1.0f,  1.0f,  1.0f }; v[6].Normal = { 1.0f,  1.0f,  1.0f }; v[6].TexCoord = { 1,1 };
+        v[7].Position = { 1.0f, -1.0f,  1.0f }; v[7].Normal = { 1.0f, -1.0f,  1.0f }; v[7].TexCoord = { 1,0 };
+
+        for (int i = 0; i < 8; ++i) verts.push_back(v[i]);
+
         inds = {
             0,1,2, 0,2,3, 4,6,5, 4,7,6, 4,5,1, 4,1,0,
             3,2,6, 3,6,7, 1,5,6, 1,6,2, 4,0,3, 4,3,7
         };
     }
     else {
-        // Unit sphere generation
+        // Unit sphere generation with normals and texcoords
         int latLines = 20;
         int longLines = 20;
 
@@ -64,7 +73,12 @@ void PlanetComponent::Initialize() {
                 float x = sin(phi) * cos(theta);
                 float y = cos(phi);
                 float z = sin(phi) * sin(theta);
-                verts.push_back({ x, y, z, 1.0f });
+
+                Vertex v;
+                v.Position = { x, y, z };
+                v.Normal = { x, y, z }; // On a unit sphere, the position is the normal
+                v.TexCoord = { (float)j / longLines, (float)i / latLines };
+                verts.push_back(v);
             }
         }
 
@@ -87,7 +101,7 @@ void PlanetComponent::Initialize() {
     indexCount = static_cast<UINT>(inds.size());
 
     // Create Vertex Buffer
-    D3D11_BUFFER_DESC vDesc = {}; vDesc.Usage = D3D11_USAGE_DEFAULT; vDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER; vDesc.ByteWidth = sizeof(XMFLOAT4) * verts.size();
+    D3D11_BUFFER_DESC vDesc = {}; vDesc.Usage = D3D11_USAGE_DEFAULT; vDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER; vDesc.ByteWidth = sizeof(Vertex) * verts.size();
     D3D11_SUBRESOURCE_DATA vData = {}; vData.pSysMem = verts.data();
     game->Device->CreateBuffer(&vDesc, &vData, &vertices);
 
@@ -137,7 +151,7 @@ void PlanetComponent::Update() {
 void PlanetComponent::Draw() {
     using namespace DirectX;
 
-    UINT stride = 16, offset = 0;
+    UINT stride = sizeof(Vertex), offset = 0;
     game->Context->RSSetState(rastState.Get());
     game->Context->IASetInputLayout(layout.Get());
     game->Context->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);

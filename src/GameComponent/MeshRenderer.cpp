@@ -3,13 +3,14 @@
 #include "../Game.h"
 #include "CameraComponent.h"
 #include "PlanetComponent.h"
+#include "PointLightComponent.h"
 
 MeshRenderer::MeshRenderer(Game* game,
-                           ITransformProvider* parent,
-                           const std::vector<Vertex>& vertices,
-                           const std::vector<int>& indices,
-                           std::wstring texturePath,
-                           std::wstring shaderPath)
+    ITransformProvider* parent,
+    const std::vector<Vertex>& vertices,
+    const std::vector<int>& indices,
+    std::wstring texturePath,
+    std::wstring shaderPath)
     : GameComponent(game),
     parent(parent),
     initVertices(vertices),
@@ -22,6 +23,10 @@ MeshRenderer::MeshRenderer(Game* game,
     indexCount(static_cast<UINT>(indices.size()))
 {
     UpdateWorldMatrix();
+    // Default material (gray, low specular)
+    material.Ambient = { 0.2f, 0.2f, 0.2f, 1.0f };
+    material.Diffuse = { 0.8f, 0.8f, 0.8f, 1.0f };
+    material.Specular = { 0.5f, 0.5f, 0.5f, 32.0f };
 }
 
 MeshRenderer::~MeshRenderer() {
@@ -46,7 +51,7 @@ void MeshRenderer::Initialize() {
         {"NORMAL",   0, DXGI_FORMAT_R32G32B32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0}
     };
     game->Device->CreateInputLayout(inputElements, 3, vsBlob->GetBufferPointer(), vsBlob->GetBufferSize(), &layout);
-    
+
     // Load Texture
     DirectX::CreateWICTextureFromFile(game->Device.Get(), game->Context.Get(), texturePath.c_str(), nullptr, textureSRV.GetAddressOf());
 
@@ -80,12 +85,16 @@ void MeshRenderer::Initialize() {
     iData.pSysMem = initIndices.data();
     game->Device->CreateBuffer(&iDesc, &iData, &indexBuffer);
 
-    // Constant Buffer
+    // Per-Object Constant Buffer
     D3D11_BUFFER_DESC cbDesc = {};
     cbDesc.Usage = D3D11_USAGE_DEFAULT;
     cbDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-    cbDesc.ByteWidth = sizeof(ConstantBufferData);
+    cbDesc.ByteWidth = sizeof(PerObjectCB);
     game->Device->CreateBuffer(&cbDesc, nullptr, constantBuffer.GetAddressOf());
+
+    // Per-Frame Constant Buffer
+    cbDesc.ByteWidth = sizeof(PerFrameCB);
+    game->Device->CreateBuffer(&cbDesc, nullptr, perFrameBuffer.GetAddressOf());
 
     // Rasterizer State
     CD3D11_RASTERIZER_DESC rastDesc = {};
@@ -118,17 +127,41 @@ void MeshRenderer::Draw() {
     game->Context->VSSetShader(vertexShader.Get(), nullptr, 0);
     game->Context->PSSetShader(pixelShader.Get(), nullptr, 0);
 
-    // Calculate WVP Matrix
+    // Locate the light (usually stored in game->Components)
+    PointLightComponent* light = nullptr;
+    for (auto c : game->Components) {
+        light = dynamic_cast<PointLightComponent*>(c);
+        if (light) break;
+    }
+
     DirectX::XMMATRIX view = game->MainCamera->GetViewMatrix();
     DirectX::XMMATRIX proj = game->MainCamera->GetProjectionMatrix();
 
-    ConstantBufferData cb;
-    cb.WVP = DirectX::XMMatrixTranspose(worldMatrix * view * proj);
-    cb.Color = color;
+    // Per-Object CB
+    PerObjectCB objCB;
+    objCB.World = DirectX::XMMatrixTranspose(worldMatrix);
+    objCB.WVP = DirectX::XMMatrixTranspose(worldMatrix * view * proj);
+    objCB.Material = material;
+    game->Context->UpdateSubresource(constantBuffer.Get(), 0, nullptr, &objCB, 0, 0);
 
-    game->Context->UpdateSubresource(constantBuffer.Get(), 0, nullptr, &cb, 0, 0);
+    // Per-Frame CB (Lighting)
+    if (light) {
+        PerFrameCB frameCB;
+        frameCB.LightPos = light->Data.Position;
+        frameCB.LightColor = light->Data.Color;
+        // Extract camera position from inverse view matrix
+        DirectX::XMVECTOR det;
+        DirectX::XMMATRIX invView = DirectX::XMMatrixInverse(&det, view);
+        DirectX::XMStoreFloat4(&frameCB.CameraPos, invView.r[3]);
+        frameCB.LightParams = { light->Data.AmbientIntensity, light->Data.ConstantAttenuation,
+                                light->Data.LinearAttenuation, light->Data.QuadraticAttenuation };
+        game->Context->UpdateSubresource(perFrameBuffer.Get(), 0, nullptr, &frameCB, 0, 0);
+    }
+
     game->Context->VSSetConstantBuffers(0, 1, constantBuffer.GetAddressOf());
+    game->Context->VSSetConstantBuffers(1, 1, perFrameBuffer.GetAddressOf());
     game->Context->PSSetConstantBuffers(0, 1, constantBuffer.GetAddressOf());
+    game->Context->PSSetConstantBuffers(1, 1, perFrameBuffer.GetAddressOf());
     game->Context->PSSetShaderResources(0, 1, textureSRV.GetAddressOf());
     game->Context->PSSetSamplers(0, 1, samplerState.GetAddressOf());
 
@@ -137,7 +170,7 @@ void MeshRenderer::Draw() {
 
 void MeshRenderer::DestroyResources() {
     layout.Reset(); vertexShader.Reset(); pixelShader.Reset();
-    vertexBuffer.Reset(); indexBuffer.Reset(); constantBuffer.Reset();
+    vertexBuffer.Reset(); indexBuffer.Reset(); constantBuffer.Reset(); perFrameBuffer.Reset();
     rastState.Reset();
 }
 
@@ -146,18 +179,18 @@ void MeshRenderer::UpdateWorldMatrix() {
 
     // Calculate Local Transform
     XMMATRIX localMatrix = XMMatrixScaling(scale.x, scale.y, scale.z) *
-                           XMMatrixRotationY(rotation.y) *
-                           XMMatrixRotationX(rotation.x) *
-                           XMMatrixRotationZ(rotation.z) *
-                           XMMatrixTranslation(position.x, position.y, position.z);
+        XMMatrixRotationY(rotation.y) *
+        XMMatrixRotationX(rotation.x) *
+        XMMatrixRotationZ(rotation.z) *
+        XMMatrixTranslation(position.x, position.y, position.z);
     if (parent) {
         DirectX::XMFLOAT3 pPos = parent->GetPosition();
         DirectX::XMFLOAT3 pRot = parent->GetRotation();
 
         XMMATRIX parentMatrix = XMMatrixRotationY(pRot.y) *
-                                XMMatrixRotationX(pRot.x) *
-                                XMMatrixRotationZ(pRot.z) *
-                                XMMatrixTranslation(pPos.x, pPos.y, pPos.z);
+            XMMatrixRotationX(pRot.x) *
+            XMMatrixRotationZ(pRot.z) *
+            XMMatrixTranslation(pPos.x, pPos.y, pPos.z);
 
         worldMatrix = localMatrix * parentMatrix;
     }
@@ -165,6 +198,7 @@ void MeshRenderer::UpdateWorldMatrix() {
         worldMatrix = localMatrix;
     }
 }
+
 void MeshRenderer::SetPosition(const DirectX::XMFLOAT3& pos) { position = pos; UpdateWorldMatrix(); }
 void MeshRenderer::SetRotation(const DirectX::XMFLOAT3& rot) { rotation = rot; UpdateWorldMatrix(); }
 void MeshRenderer::SetScale(const DirectX::XMFLOAT3& scl) { scale = scl; UpdateWorldMatrix(); }

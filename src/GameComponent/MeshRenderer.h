@@ -8,6 +8,7 @@
 
 #include "GameComponent.h"
 #include "../Helpers/Vertex.h"
+#include "../LightData.h"
 
 class ITransformProvider;
 
@@ -15,11 +16,11 @@ class MeshRenderer : public GameComponent
 {
 public:
     MeshRenderer(Game* game,
-                 ITransformProvider* parent,
-                 const std::vector<Vertex>& vertices,
-                 const std::vector<int>& indices,
-                 std::wstring texturePath = L"./Shaders/MyVeryFirstShader.hlsl",
-                 std::wstring shaderPath = L"./Shaders/MyVeryFirstShader.hlsl");
+        ITransformProvider* parent,
+        const std::vector<Vertex>& vertices,
+        const std::vector<int>& indices,
+        std::wstring texturePath = L"./Shaders/MyVeryFirstShader.hlsl",
+        std::wstring shaderPath = L"./Shaders/MyVeryFirstShader.hlsl");
 
     ~MeshRenderer();
 
@@ -34,6 +35,7 @@ public:
     void SetRotation(const DirectX::XMFLOAT3& rot);
     void SetScale(const DirectX::XMFLOAT3& scl);
     void SetColor(const DirectX::XMFLOAT4& c) { color = c; }
+    void SetMaterial(const MaterialData& mat) { material = mat; }
 
 private:
     void UpdateWorldMatrix();
@@ -48,14 +50,22 @@ private:
     DirectX::XMFLOAT3 rotation;
     DirectX::XMFLOAT3 scale;
     DirectX::XMFLOAT4 color;
+    MaterialData material;
 
     DirectX::XMMATRIX worldMatrix;
     UINT indexCount;
 
-    __declspec(align(16))
-        struct ConstantBufferData {
+    struct PerObjectCB {
+        DirectX::XMMATRIX World;
         DirectX::XMMATRIX WVP;
-        DirectX::XMFLOAT4 Color;
+        MaterialData Material;
+    };
+
+    struct PerFrameCB {
+        DirectX::XMFLOAT4 LightPos;
+        DirectX::XMFLOAT4 LightColor;
+        DirectX::XMFLOAT4 CameraPos;
+        DirectX::XMFLOAT4 LightParams;
     };
 
     Microsoft::WRL::ComPtr<ID3D11PixelShader> pixelShader;
@@ -64,6 +74,7 @@ private:
     Microsoft::WRL::ComPtr<ID3D11Buffer> vertexBuffer;
     Microsoft::WRL::ComPtr<ID3D11Buffer> indexBuffer;
     Microsoft::WRL::ComPtr<ID3D11Buffer> constantBuffer;
+    Microsoft::WRL::ComPtr<ID3D11Buffer> perFrameBuffer;
     Microsoft::WRL::ComPtr<ID3D11RasterizerState> rastState;
     Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> textureSRV;
     Microsoft::WRL::ComPtr<ID3D11SamplerState> samplerState;

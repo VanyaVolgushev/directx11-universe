@@ -13,6 +13,8 @@ class CameraComponent;
 class Game
 {
 public:
+    const float BG_COLOR[3] = {0.0f, 0.0f, 0.0f};
+
     Microsoft::WRL::ComPtr<ID3D11DepthStencilView> DepthView;
     Microsoft::WRL::ComPtr<ID3D11Texture2D> BackBuffer;
     Microsoft::WRL::ComPtr<ID3D11DeviceContext> Context;

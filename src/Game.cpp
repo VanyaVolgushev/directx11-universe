@@ -1,7 +1,7 @@
 #include "Game.h"
 #include "DisplayWin32.h"
 #include "InputDevice.h"
-#include "GameComponent.h"
+#include "GameComponent/GameComponent.h"
 #include <iostream>
 
 #pragma comment(lib, "d3d11.lib")
@@ -96,10 +96,8 @@ void Game::CreateBuffers()
 
 void Game::RestoreTargets()
 {
-    // --- UPDATED: Bind and clear DepthView alongside RenderView ---
     Context->OMSetRenderTargets(1, RenderView.GetAddressOf(), DepthView.Get());
-    float color[] = { 0.05f, 0.05f, 0.1f, 1.0f }; // Dark space background
-    Context->ClearRenderTargetView(RenderView.Get(), color);
+    Context->ClearRenderTargetView(RenderView.Get(), BG_COLOR);
     Context->ClearDepthStencilView(DepthView.Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 }
 

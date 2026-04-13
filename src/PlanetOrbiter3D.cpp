@@ -5,19 +5,24 @@
 #include "Game.h"
 #include "Helpers/LoadFBX.h"
 #include "GameComponent/GameComponents.h"
+#include "GameComponent/PointLightComponent.h"
 
 int main()
 {
     Game game(L"PlanetOrbiter", 1024, 768);
 
     // --- CREATE EARTH AND SUN ---
-    auto sun = new PlanetComponent(&game, nullptr, 0.0f, 0.0f, 3.0f, { 1.0f, 0.9f, 0.0f, 1.0f }, PlanetShape::Sphere, 0.2f);
+    auto sun = new PlanetComponent(&game, nullptr, 0.0f, 0.0f, 3.0f, { 1.0f, 0.95f, 0.8f, 1.0f }, PlanetShape::Sphere, 0.2f);
     game.Components.push_back(sun);
-    auto earth = new PlanetComponent(&game, sun, 14.0f, 1.0f, 1.0f, { 1.0f, 1.0f, 0.9f, 1.0f }, PlanetShape::Sphere, 2.0f);
+    auto earth = new PlanetComponent(&game, sun, 14.0f, 1.0f, 1.0f, { 0.0f, 0.0f, 0.0f, 1.0f }, PlanetShape::Sphere, 2.0f);
     game.Components.push_back(earth);
     auto moon = new PlanetComponent(&game, earth, 2.0f, 4.0f, 0.3f, { 0.7f, 0.7f, 0.7f, 1.0f }, PlanetShape::Box, -4.0f);
     game.Components.push_back(moon);
     game.Components.push_back(new OrbitalCam(&game, 50.0f, earth)); // Also add a camera to earth
+
+    // --- CREATE LIGHT ---
+    auto sunLight = new PointLightComponent(&game, { 0, 0, 0 }, { 10.0f, 10.0f, 8.0f, 1.0f });
+    game.Components.push_back(sunLight);
 
     // --- CREATE EARTH MESH---
     {
@@ -31,10 +36,16 @@ int main()
                 fbxVertices,
                 fbxIndices,
                 L"./Assets/EarthTexture.jpeg",
-                L"./Shaders/TexturedShader.hlsl"
+                L"./Shaders/TexturedPhongShader.hlsl"
             );
             fbxModel->SetPosition(DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f));
             fbxModel->SetScale(DirectX::XMFLOAT3(1.1f, 1.1f, 1.1f));
+            // Set material
+            MaterialData earthMat;
+            earthMat.Ambient = { 0.1f, 0.1f, 0.1f, 1.0f };
+            earthMat.Diffuse = { 1.0f, 1.0f, 1.0f, 1.0f };
+            earthMat.Specular = { 0.3f, 0.3f, 0.3f, 32.0f };
+            fbxModel->SetMaterial(earthMat);
             game.Components.push_back(fbxModel);
         }
     }
@@ -55,7 +66,7 @@ int main()
                 fbxVertices,
                 fbxIndices,
                 L"./Assets/gorbino.png",
-                L"./Shaders/TexturedShader.hlsl"
+                L"./Shaders/TexturedPhongShader.hlsl"
             );
             fbxModel->SetScale(DirectX::XMFLOAT3(0.1f, 0.1f, 0.1f));
 
@@ -89,7 +100,7 @@ int main()
                         fbxVertices,
                         fbxIndices,
                         L"./Assets/StatueOfLiberty.png",
-                        L"./Shaders/TexturedShader.hlsl"
+                        L"./Shaders/TexturedPhongShader.hlsl"
                     );
 
                     fbxModel->SetScale(DirectX::XMFLOAT3(0.003f, 0.003f, 0.003f));
@@ -122,7 +133,7 @@ int main()
                         fbxVertices,
                         fbxIndices,
                         L"./Assets/EiffelTower.jpg",
-                        L"./Shaders/TexturedShader.hlsl"
+                        L"./Shaders/TexturedPhongShader.hlsl"
                     );
 
                     fbxModel->SetScale(DirectX::XMFLOAT3(0.00001f, 0.00001f, 0.00001f));
@@ -134,7 +145,7 @@ int main()
         }
         // Pisa tower
         {
-            DirectX::XMFLOAT3 vectorFromCenterOfGlobePointingToStatue = { 0.642154f, 0.355212f, 0.695714f};
+            DirectX::XMFLOAT3 vectorFromCenterOfGlobePointingToStatue = { 0.642154f, 0.355212f, 0.695714f };
             StickyCollectibleComponent* stickyPoint = new StickyCollectibleComponent(
                 &game,                     // Game*
                 earth,                     // The PlanetComponent
@@ -157,7 +168,7 @@ int main()
                         fbxVertices,
                         fbxIndices,
                         L"./Assets/Pisa.jpg",
-                        L"./Shaders/TexturedShader.hlsl"
+                        L"./Shaders/TexturedPhongShader.hlsl"
                     );
 
                     fbxModel->SetScale(DirectX::XMFLOAT3(0.03f, 0.03f, 0.03f));
@@ -241,7 +252,6 @@ int main()
 
         game.Components.push_back(new IsometricCam(&game, 90.0f));
         game.Components.push_back(new FPSCam(&game));
-        game.Components.push_back(new OrbitalCam(&game, 80.0f));
         game.Components.push_back(new OrbitalCam(&game, 80.0f));
         game.Components.push_back(new CameraSwitcher(&game));
     }
