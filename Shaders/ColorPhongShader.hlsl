@@ -9,9 +9,6 @@ cbuffer PerObject : register(b0)
     float4 MaterialSpecular;
 };
 
-Texture2D objTexture : register(t0);
-SamplerState objSampler : register(s0);
-
 struct VS_INPUT
 {
     float3 Pos : POSITION;
@@ -23,7 +20,6 @@ struct PS_INPUT
 {
     float4 Pos : SV_POSITION;
     float3 WorldPos : POSITION1;
-    float2 TexCoord : TEXCOORD;
     float3 Normal : NORMAL;
 };
 
@@ -33,16 +29,11 @@ PS_INPUT VSMain(VS_INPUT input)
     output.Pos = mul(float4(input.Pos, 1.0f), WVP);
     output.WorldPos = mul(float4(input.Pos, 1.0f), World).xyz;
     output.Normal = normalize(mul(input.Normal, (float3x3) World));
-    output.TexCoord = input.TexCoord;
     return output;
 }
 
 float4 PSMain(PS_INPUT input) : SV_TARGET
 {
-    float4 texColor = objTexture.Sample(objSampler, input.TexCoord);
-    
-    // Mix the texture with the material diffuse color
-    float4 albedo = texColor * MaterialDiffuse;
-    
-    return CalculatePhong(input.WorldPos, input.Normal, albedo, MaterialAmbient, MaterialSpecular);
+    // Albedo is just the material color
+    return CalculatePhong(input.WorldPos, input.Normal, MaterialDiffuse, MaterialAmbient, MaterialSpecular);
 }

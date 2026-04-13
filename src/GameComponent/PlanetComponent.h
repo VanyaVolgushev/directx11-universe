@@ -1,16 +1,11 @@
 #pragma once
 #include <directxmath.h>
-#include <wrl.h>
-#include <d3d11.h>
-#include <vector>
-
 #include "GameComponent.h"
 #include "../ITransformProvider.h"
 
 enum class PlanetShape { Box, Sphere };
 
-class PlanetComponent : public GameComponent,
-                        public ITransformProvider
+class PlanetComponent : public GameComponent, public ITransformProvider
 {
 public:
     PlanetComponent(Game* game,
@@ -22,24 +17,20 @@ public:
         PlanetShape shape = PlanetShape::Sphere,
         float rotationSpeed = 0.0f);
 
-    ~PlanetComponent();
+    void CreateMeshChild(PlanetShape shape, float radius, Game* game, DirectX::XMFLOAT4& color);
 
-    // GameComponent interface implementation
-    void Initialize() override;
+    virtual ~PlanetComponent() = default;
+
     void Update() override;
-    void Draw() override;
-    void DestroyResources() override;
 
-    // ITransformProvider interface implementation
-    DirectX::XMFLOAT3 GetPosition() const override;
-    DirectX::XMFLOAT3 GetRotation() const override;
+    // ITransformProvider implementation
+    DirectX::XMFLOAT3 GetPosition() const override { return currentPosition; }
+    DirectX::XMFLOAT3 GetRotation() const override { return currentRotation; }
 
-    // Other
     float GetRadius() const { return radius; }
 
 private:
-    PlanetComponent* parent; // If null, orbits the center of the world
-
+    PlanetComponent* parent;
     float orbitRadius;
     float angularSpeed;
     float radius;
@@ -50,21 +41,4 @@ private:
 
     DirectX::XMFLOAT3 currentPosition;
     DirectX::XMFLOAT3 currentRotation;
-
-    DirectX::XMMATRIX worldMatrix;
-    UINT indexCount;
-
-    __declspec(align(16))
-        struct ConstantBufferData {
-        DirectX::XMMATRIX WVP;
-        DirectX::XMFLOAT4 Color;
-    };
-
-    Microsoft::WRL::ComPtr<ID3D11PixelShader> pixelShader;
-    Microsoft::WRL::ComPtr<ID3D11VertexShader> vertexShader;
-    Microsoft::WRL::ComPtr<ID3D11InputLayout> layout;
-    Microsoft::WRL::ComPtr<ID3D11Buffer> vertices;
-    Microsoft::WRL::ComPtr<ID3D11Buffer> indices;
-    Microsoft::WRL::ComPtr<ID3D11Buffer> constantBuffer;
-    Microsoft::WRL::ComPtr<ID3D11RasterizerState> rastState;
 };
