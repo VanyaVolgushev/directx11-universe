@@ -2,16 +2,9 @@
 #include <random>
 
 #include "ITransformProvider.h"
-#include "PlanetComponent.h"
 #include "Game.h"
-#include "FPSCam.h"
-#include "OrbitalCam.h"
-#include "IsometricCam.h"
-#include "CameraSwitcher.h"
-#include "MeshRenderer.h"
 #include "Helpers/LoadFBX.h"
-#include "RollingSphereComponent.h"
-#include "StickyCollectibleComponent.h"
+#include "GameComponent/GameComponents.h"
 
 int main()
 {

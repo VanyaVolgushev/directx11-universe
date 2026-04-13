@@ -1,6 +1,6 @@
 #pragma once
 #include "CameraComponent.h"
-#include "InputDevice.h"
+#include "../InputDevice.h"
 #include <directxmath.h>
 
 class IsometricCam : public CameraComponent {

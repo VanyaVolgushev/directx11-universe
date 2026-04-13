@@ -5,7 +5,7 @@
 #include <vector>
 
 #include "GameComponent.h"
-#include "ITransformProvider.h"
+#include "../ITransformProvider.h"
 
 enum class PlanetShape { Box, Sphere };
 

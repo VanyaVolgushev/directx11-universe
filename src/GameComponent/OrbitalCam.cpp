@@ -1,9 +1,9 @@
 #include <algorithm>
 
 #include "OrbitalCam.h"
-#include "Game.h"
-#include "InputDevice.h"
-#include "DisplayWin32.h"
+#include "../Game.h"
+#include "../InputDevice.h"
+#include "../DisplayWin32.h"
 #include "PlanetComponent.h"
 
 OrbitalCam::OrbitalCam(Game* game, float initialRadius, PlanetComponent* parent)

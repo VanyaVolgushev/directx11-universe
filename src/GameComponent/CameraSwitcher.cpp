@@ -1,6 +1,6 @@
 #include "CameraSwitcher.h"
-#include "Game.h"
-#include "InputDevice.h"
+#include "../Game.h"
+#include "../InputDevice.h"
 #include "CameraComponent.h"
 
 CameraSwitcher::CameraSwitcher(Game* game) : GameComponent(game), currentIndex(0), tabWasPressed(false) {}

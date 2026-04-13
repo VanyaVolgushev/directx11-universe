@@ -1,7 +1,7 @@
 #include "StickyCollectibleComponent.h"
 #include "PlanetComponent.h"
 #include "RollingSphereComponent.h"
-#include "Game.h"
+#include "../Game.h"
 #include <cmath>
 
 StickyCollectibleComponent::StickyCollectibleComponent(Game* game,

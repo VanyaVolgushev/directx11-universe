@@ -1,8 +1,8 @@
 ﻿#include "RollingSphereComponent.h"
 #include "PlanetComponent.h"
-#include "Game.h"
-#include "InputDevice.h"
-#include "Keys.h"
+#include "../Game.h"
+#include "../InputDevice.h"
+#include "../Keys.h"
 #include <cmath>
 
 // Helper function to convert a rotation matrix to Euler angles (Y, X, Z order)

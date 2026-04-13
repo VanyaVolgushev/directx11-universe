@@ -2,8 +2,8 @@
 #include <d3dcompiler.h>
 #include <cmath>
 
-#include "Game.h"
-#include "DisplayWin32.h"
+#include "../Game.h"
+#include "../DisplayWin32.h"
 #include "CameraComponent.h"
 
 #define ORBIT_DISTANCE_MULT 1.3

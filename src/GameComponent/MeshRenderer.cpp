@@ -1,6 +1,6 @@
 #include <d3dcompiler.h>
 #include "MeshRenderer.h"
-#include "Game.h"
+#include "../Game.h"
 #include "CameraComponent.h"
 #include "PlanetComponent.h"
 

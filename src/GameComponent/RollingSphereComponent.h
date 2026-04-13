@@ -1,6 +1,6 @@
 #pragma once
 #include "GameComponent.h"
-#include "ITransformProvider.h"
+#include "../ITransformProvider.h"
 #include <DirectXMath.h>
 
 class PlanetComponent;

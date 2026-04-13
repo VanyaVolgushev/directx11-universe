@@ -1,6 +1,6 @@
 ﻿#include "TriangleComponent.h"
-#include "Game.h"
-#include "DisplayWin32.h"
+#include "../Game.h"
+#include "../DisplayWin32.h"
 #include <d3dcompiler.h>
 #include <iostream>
 

@@ -127,26 +127,26 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="src\RollingSphereComponent.cpp" />
-    <ClCompile Include="src\MeshRenderer.cpp" />
-    <ClCompile Include="src\IsometricCam.cpp" />
-    <ClCompile Include="src\OrbitalCam.cpp" />
-    <ClCompile Include="src\CameraSwitcher.cpp" />
-    <ClCompile Include="src\CameraComponent.cpp" />
-    <ClCompile Include="src\FPSCam.cpp" />
+    <ClCompile Include="src\GameComponent\RollingSphereComponent.cpp" />
+    <ClCompile Include="src\GameComponent\MeshRenderer.cpp" />
+    <ClCompile Include="src\GameComponent\IsometricCam.cpp" />
+    <ClCompile Include="src\GameComponent\OrbitalCam.cpp" />
+    <ClCompile Include="src\GameComponent\CameraSwitcher.cpp" />
+    <ClCompile Include="src\GameComponent\CameraComponent.cpp" />
+    <ClCompile Include="src\GameComponent\FPSCam.cpp" />
     <ClCompile Include="src\Delegates.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="src\DisplayWin32.cpp" />
     <ClCompile Include="src\Game.cpp" />
-    <ClCompile Include="src\GameComponent.cpp" />
+    <ClCompile Include="src\GameComponent\GameComponent.cpp" />
     <ClCompile Include="src\InputDevice.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="src\PlanetOrbiter3D.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="src\PlanetComponent.cpp">
+    <ClCompile Include="src\GameComponent\PlanetComponent.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
       <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</DeploymentContent>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</ExcludedFromBuild>
@@ -156,36 +156,37 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
       <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</DeploymentContent>
     </ClCompile>
-    <ClCompile Include="src\StickyCollectibleComponent.cpp" />
-    <ClInclude Include="src\RollingSphereComponent.h" />
+    <ClCompile Include="src\GameComponent\StickyCollectibleComponent.cpp" />
+    <ClInclude Include="src\GameComponent\GameComponents.h" />
+    <ClInclude Include="src\GameComponent\RollingSphereComponent.h" />
     <ClInclude Include="src\ITransformProvider.h" />
     <ClInclude Include="src\Helpers\LoadFBX.h">
       <FileType>CppCode</FileType>
     </ClInclude>
-    <ClCompile Include="src\TriangleComponent.cpp" />
-    <ClInclude Include="src\StickyCollectibleComponent.h" />
+    <ClCompile Include="src\GameComponent\TriangleComponent.cpp" />
+    <ClInclude Include="src\GameComponent\StickyCollectibleComponent.h" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Helpers\Vertex.h" />
-    <ClInclude Include="src\MeshRenderer.h" />
-    <ClInclude Include="src\IsometricCam.h" />
-    <ClInclude Include="src\OrbitalCam.h" />
-    <ClInclude Include="src\CameraSwitcher.h" />
-    <ClInclude Include="src\CameraComponent.h" />
-    <ClInclude Include="src\FPSCam.h" />
+    <ClInclude Include="src\GameComponent\MeshRenderer.h" />
+    <ClInclude Include="src\GameComponent\IsometricCam.h" />
+    <ClInclude Include="src\GameComponent\OrbitalCam.h" />
+    <ClInclude Include="src\GameComponent\CameraSwitcher.h" />
+    <ClInclude Include="src\GameComponent\CameraComponent.h" />
+    <ClInclude Include="src\GameComponent\FPSCam.h" />
     <ClInclude Include="src\Delegates.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
     </ClInclude>
     <ClInclude Include="src\DisplayWin32.h" />
     <ClInclude Include="src\Game.h" />
-    <ClInclude Include="src\GameComponent.h" />
+    <ClInclude Include="src\GameComponent\GameComponent.h" />
     <ClInclude Include="src\InputDevice.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
     </ClInclude>
     <ClInclude Include="src\Keys.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
     </ClInclude>
-    <ClInclude Include="src\PlanetComponent.h">
+    <ClInclude Include="src\GameComponent\PlanetComponent.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
       <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</DeploymentContent>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</ExcludedFromBuild>
@@ -195,7 +196,7 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
       <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</DeploymentContent>
     </ClInclude>
-    <ClInclude Include="src\TriangleComponent.h" />
+    <ClInclude Include="src\GameComponent\TriangleComponent.h" />
   </ItemGroup>
   <ItemGroup>
     <Natvis Include="src\Delegates.natvis" />

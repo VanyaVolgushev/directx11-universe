@@ -1,9 +1,9 @@
 ﻿#include <algorithm>
 
 #include "IsometricCam.h"
-#include "Game.h"
-#include "InputDevice.h"
-#include "DisplayWin32.h"
+#include "../Game.h"
+#include "../InputDevice.h"
+#include "../DisplayWin32.h"
 
 IsometricCam::IsometricCam(Game* game, float initialViewWidth)
     : CameraComponent(game), viewWidth(initialViewWidth),

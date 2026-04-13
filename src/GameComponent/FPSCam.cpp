@@ -1,8 +1,8 @@
-#include "FPSCam.h"
-#include "Game.h"
-#include "InputDevice.h"
-#include "DisplayWin32.h"
 #include <algorithm>
+
+#include "../Game.h"
+#include "../DisplayWin32.h"
+#include "FPSCam.h"
 
 FPSCam::FPSCam(Game* game) : CameraComponent(game),
 position(0.0f, 0.0f, 0.0f),

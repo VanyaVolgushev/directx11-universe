@@ -7,7 +7,7 @@
 #include <string>
 
 #include "GameComponent.h"
-#include "Helpers/Vertex.h"
+#include "../Helpers/Vertex.h"
 
 class ITransformProvider;
 

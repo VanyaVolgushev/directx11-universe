@@ -24,10 +24,10 @@
     <ClCompile Include="src\PlanetOrbiter3D.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\GameComponent.cpp">
+    <ClCompile Include="src\GameComponent\GameComponent.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\TriangleComponent.cpp">
+    <ClCompile Include="src\GameComponent\TriangleComponent.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\Game.cpp">
@@ -36,36 +36,36 @@
     <ClCompile Include="src\DisplayWin32.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\PlanetComponent.cpp">
+    <ClCompile Include="src\GameComponent\PlanetComponent.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\FPSCam.cpp">
+    <ClCompile Include="src\GameComponent\FPSCam.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\CameraComponent.cpp">
+    <ClCompile Include="src\GameComponent\CameraComponent.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\CameraSwitcher.cpp">
+    <ClCompile Include="src\GameComponent\CameraSwitcher.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\OrbitalCam.cpp">
+    <ClCompile Include="src\GameComponent\OrbitalCam.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\IsometricCam.cpp">
+    <ClCompile Include="src\GameComponent\IsometricCam.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\MeshRenderer.cpp">
+    <ClCompile Include="src\GameComponent\MeshRenderer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\RollingSphereComponent.cpp">
+    <ClCompile Include="src\GameComponent\RollingSphereComponent.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\StickyCollectibleComponent.cpp">
+    <ClCompile Include="src\GameComponent\StickyCollectibleComponent.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\GameComponent.h">
+    <ClInclude Include="src\GameComponent\GameComponent.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\Game.h">
@@ -83,28 +83,28 @@
     <ClInclude Include="src\Keys.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\TriangleComponent.h">
+    <ClInclude Include="src\GameComponent\TriangleComponent.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\PlanetComponent.h">
+    <ClInclude Include="src\GameComponent\PlanetComponent.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\FPSCam.h">
+    <ClInclude Include="src\GameComponent\FPSCam.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\CameraComponent.h">
+    <ClInclude Include="src\GameComponent\CameraComponent.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\CameraSwitcher.h">
+    <ClInclude Include="src\GameComponent\CameraSwitcher.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\OrbitalCam.h">
+    <ClInclude Include="src\GameComponent\OrbitalCam.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\IsometricCam.h">
+    <ClInclude Include="src\GameComponent\IsometricCam.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\MeshRenderer.h">
+    <ClInclude Include="src\GameComponent\MeshRenderer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\Helpers\Vertex.h">
@@ -116,10 +116,13 @@
     <ClInclude Include="src\ITransformProvider.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\RollingSphereComponent.h">
+    <ClInclude Include="src\GameComponent\RollingSphereComponent.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\StickyCollectibleComponent.h">
+    <ClInclude Include="src\GameComponent\StickyCollectibleComponent.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\GameComponent\GameComponents.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
