@@ -158,6 +158,8 @@
       <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</DeploymentContent>
     </ClCompile>
     <ClCompile Include="src\GameComponent\StickyCollectibleComponent.cpp" />
+    <ClCompile Include="src\Helpers\ShadowMap.cpp" />
+    <ClInclude Include="src\Helpers\ShadowMap.h" />
     <ClInclude Include="src\GameComponent\PointLightComponent.h" />
     <ClInclude Include="src\GameComponent\GameComponents.h" />
     <ClInclude Include="src\GameComponent\RollingSphereComponent.h" />
@@ -252,6 +254,11 @@
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">4.0</ShaderModel>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Compute</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">4.0</ShaderModel>
+      <FileType>Document</FileType>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Shaders\ShadowMapShader.hlsl">
       <FileType>Document</FileType>
     </None>
   </ItemGroup>

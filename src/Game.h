@@ -9,11 +9,14 @@ class DisplayWin32;
 class InputDevice;
 class GameComponent;
 class CameraComponent;
+class ShadowMap;
 
 class Game
 {
 public:
     const float BG_COLOR[3] = {0.0f, 0.0f, 0.0f};
+
+    ShadowMap* Shadows = nullptr;
 
     Microsoft::WRL::ComPtr<ID3D11DepthStencilView> DepthView;
     Microsoft::WRL::ComPtr<ID3D11Texture2D> BackBuffer;
@@ -55,4 +58,5 @@ public:
 private:
     void CreateBuffers();
     void DestroyResources();
+    void RenderShadowPass();
 };

@@ -30,6 +30,8 @@ public:
     void Update() override;
     void DestroyResources() override;
 
+    void DrawShadowPass();
+
     ITransformProvider* GetParent() { return parent; }
 
     // Transform controls
@@ -39,8 +41,11 @@ public:
     void SetColor(const DirectX::XMFLOAT4& c) { color = c; }
     void SetMaterial(const MaterialData& mat) { material = mat; }
 
+    bool CastsShadow = true;
+
 private:
     void UpdateWorldMatrix();
+    void UpdatePerObjectCB();
 
     ITransformProvider* parent;
 
@@ -60,6 +65,7 @@ private:
     struct PerObjectCB {
         DirectX::XMMATRIX World;
         DirectX::XMMATRIX WVP;
+        DirectX::XMMATRIX LightWVP;
         MaterialData Material;
     };
 
@@ -68,6 +74,8 @@ private:
         DirectX::XMFLOAT4 LightColor;
         DirectX::XMFLOAT4 CameraPos;
         DirectX::XMFLOAT4 LightParams;
+        DirectX::XMFLOAT4 ShadowParams;
+        DirectX::XMFLOAT4 LightDirection;
     };
 
     Microsoft::WRL::ComPtr<ID3D11PixelShader> pixelShader;

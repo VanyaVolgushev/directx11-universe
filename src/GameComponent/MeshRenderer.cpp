@@ -1,6 +1,7 @@
 #include <d3dcompiler.h>
 #include "MeshRenderer.h"
 #include "../Game.h"
+#include "../Helpers/ShadowMap.h"
 #include "CameraComponent.h"
 #include "PlanetComponent.h"
 #include "PointLightComponent.h"
@@ -113,8 +114,48 @@ void MeshRenderer::Update() {
     }
 }
 
+void MeshRenderer::UpdatePerObjectCB() {
+    if (!constantBuffer) return;
+    if (!game->MainCamera) return;
+
+    using namespace DirectX;
+
+    XMMATRIX view = game->MainCamera->GetViewMatrix();
+    XMMATRIX proj = game->MainCamera->GetProjectionMatrix();
+
+    XMMATRIX lightViewProj = XMMatrixIdentity();
+    if (game->Shadows) {
+        lightViewProj = game->Shadows->GetLightViewProj();
+    }
+
+    PerObjectCB objCB;
+    objCB.World    = XMMatrixTranspose(worldMatrix);
+    objCB.WVP      = XMMatrixTranspose(worldMatrix * view * proj);
+    objCB.LightWVP = XMMatrixTranspose(worldMatrix * lightViewProj);
+    objCB.Material = material;
+    game->Context->UpdateSubresource(constantBuffer.Get(), 0, nullptr, &objCB, 0, 0);
+}
+
+void MeshRenderer::DrawShadowPass() {
+    if (!CastsShadow) return;
+    if (!vertexBuffer || !indexBuffer || !constantBuffer) return;
+
+    UpdatePerObjectCB();
+
+    UINT stride = sizeof(Vertex);
+    UINT offset = 0;
+
+    game->Context->IASetIndexBuffer(indexBuffer.Get(), DXGI_FORMAT_R32_UINT, 0);
+    game->Context->IASetVertexBuffers(0, 1, vertexBuffer.GetAddressOf(), &stride, &offset);
+    game->Context->VSSetConstantBuffers(0, 1, constantBuffer.GetAddressOf());
+
+    game->Context->DrawIndexed(indexCount, 0, 0);
+}
+
 void MeshRenderer::Draw() {
     if (!game->MainCamera) return;
+
+    UpdatePerObjectCB();
 
     UINT stride = sizeof(Vertex);
     UINT offset = 0;
@@ -135,14 +176,6 @@ void MeshRenderer::Draw() {
     }
 
     DirectX::XMMATRIX view = game->MainCamera->GetViewMatrix();
-    DirectX::XMMATRIX proj = game->MainCamera->GetProjectionMatrix();
-
-    // Per-Object CB
-    PerObjectCB objCB;
-    objCB.World = DirectX::XMMatrixTranspose(worldMatrix);
-    objCB.WVP = DirectX::XMMatrixTranspose(worldMatrix * view * proj);
-    objCB.Material = material;
-    game->Context->UpdateSubresource(constantBuffer.Get(), 0, nullptr, &objCB, 0, 0);
 
     // Per-Frame CB (Lighting)
     if (light) {
@@ -155,6 +188,11 @@ void MeshRenderer::Draw() {
         DirectX::XMStoreFloat4(&frameCB.CameraPos, invView.r[3]);
         frameCB.LightParams = { light->Data.AmbientIntensity, light->Data.ConstantAttenuation,
                                 light->Data.LinearAttenuation, light->Data.QuadraticAttenuation };
+
+        float shadowFarZ = (game->Shadows) ? game->Shadows->GetFarZ() : light->ShadowFarZ;
+        frameCB.ShadowParams = { light->ShadowAmbient, shadowFarZ, light->ShadowBias, 0.0f };
+        frameCB.LightDirection = { 0.0f, -1.0f, 0.0f, 0.0f };
+
         game->Context->UpdateSubresource(perFrameBuffer.Get(), 0, nullptr, &frameCB, 0, 0);
     }
 
@@ -164,6 +202,11 @@ void MeshRenderer::Draw() {
     game->Context->PSSetConstantBuffers(1, 1, perFrameBuffer.GetAddressOf());
     game->Context->PSSetShaderResources(0, 1, textureSRV.GetAddressOf());
     game->Context->PSSetSamplers(0, 1, samplerState.GetAddressOf());
+
+    if (game->Shadows) {
+        game->Context->PSSetShaderResources(1, 1, game->Shadows->SRV.GetAddressOf());
+        game->Context->PSSetSamplers(1, 1, game->Shadows->Sampler.GetAddressOf());
+    }
 
     game->Context->DrawIndexed(indexCount, 0, 0);
 }

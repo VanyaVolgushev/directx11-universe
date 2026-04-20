@@ -50,6 +50,8 @@ int main()
 
     // --- CREATE LIGHT ---
     auto sunLight = new PointLightComponent(&game, { 0, 0, 0 }, { 10.0f, 10.0f, 8.0f, 1.0f });
+    sunLight->ShadowFarZ = 120.0f;
+    sunLight->ShadowBias = 0.0003f;
     game.Components.push_back(sunLight);
 
     // --- CREATE EARTH MESH---

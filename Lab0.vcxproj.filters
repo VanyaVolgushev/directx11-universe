@@ -66,6 +66,9 @@
     <ClCompile Include="src\GameComponent\PointLightComponent.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\Helpers\ShadowMap.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\GameComponent\GameComponent.h">
@@ -134,6 +137,9 @@
     <ClInclude Include="src\GameComponent\PointLightComponent.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\Helpers\ShadowMap.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Natvis Include="src\Delegates.natvis">
@@ -145,5 +151,6 @@
     <None Include="Shaders\MyVeryFirstShader.hlsl" />
     <None Include="Shaders\TexturedShader.hlsl" />
     <None Include="Shaders\TexturedPhongShader.hlsl" />
+    <None Include="Shaders\ShadowMapShader.hlsl" />
   </ItemGroup>
 </Project>

@@ -14,5 +14,10 @@ public:
         Data.QuadraticAttenuation = 0.01f;
     }
 
+    float ShadowNearZ   = 5.0f;
+    float ShadowFarZ    = 200.0f;
+    float ShadowBias    = 0.002f;
+    float ShadowAmbient = 0.35f;
+
     PointLightData Data;
 };

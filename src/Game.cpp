@@ -2,6 +2,9 @@
 #include "DisplayWin32.h"
 #include "InputDevice.h"
 #include "GameComponent/GameComponent.h"
+#include "GameComponent/MeshRenderer.h"
+#include "GameComponent/PointLightComponent.h"
+#include "Helpers/ShadowMap.h"
 #include <iostream>
 
 #pragma comment(lib, "d3d11.lib")
@@ -32,6 +35,7 @@ Game::~Game()
     DestroyResources();
     delete InputDevice;
     delete Display;
+    delete Shadows;
     for (auto component : Components) {
         delete component;
     }
@@ -43,6 +47,9 @@ void Game::Initialize()
     CreateBuffers();
 
     InputDevice = new class InputDevice(this);
+
+    Shadows = new ShadowMap(this);
+    Shadows->Initialize();
 
     for (auto component : Components) {
         component->Initialize();
@@ -96,6 +103,15 @@ void Game::CreateBuffers()
 
 void Game::RestoreTargets()
 {
+    D3D11_VIEWPORT viewport = {};
+    viewport.Width = static_cast<float>(Display->ClientWidth);
+    viewport.Height = static_cast<float>(Display->ClientHeight);
+    viewport.TopLeftX = 0;
+    viewport.TopLeftY = 0;
+    viewport.MinDepth = 0;
+    viewport.MaxDepth = 1.0f;
+    Context->RSSetViewports(1, &viewport);
+
     Context->OMSetRenderTargets(1, RenderView.GetAddressOf(), DepthView.Get());
     Context->ClearRenderTargetView(RenderView.Get(), BG_COLOR);
     Context->ClearDepthStencilView(DepthView.Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
@@ -105,6 +121,9 @@ void Game::DestroyResources()
 {
     for (auto component : Components) {
         component->DestroyResources();
+    }
+    if (Shadows) {
+        Shadows->DestroyResources();
     }
     RenderView.Reset();
     RenderSRV.Reset();
@@ -174,9 +193,34 @@ void Game::PrepareFrame()
     Context->RSSetViewports(1, &viewport);
 }
 
+void Game::RenderShadowPass()
+{
+    if (!Shadows) return;
+
+    PointLightComponent* light = nullptr;
+    for (auto c : Components) {
+        light = dynamic_cast<PointLightComponent*>(c);
+        if (light) break;
+    }
+    if (!light) return;
+
+    DirectX::XMFLOAT3 lightPos{ light->Data.Position.x, light->Data.Position.y, light->Data.Position.z };
+    Shadows->UpdateLightMatrices(lightPos, light->ShadowNearZ, light->ShadowFarZ);
+
+    for (int face = 0; face < ShadowMap::FACE_COUNT; ++face) {
+        Shadows->BeginShadowFace(face);
+        for (auto component : Components) {
+            if (auto mr = dynamic_cast<MeshRenderer*>(component)) {
+                mr->DrawShadowPass();
+            }
+        }
+    }
+}
+
 void Game::Draw()
 {
     PrepareFrame();
+    RenderShadowPass();
     RestoreTargets();
 
     for (auto component : Components) {
