@@ -30,6 +30,8 @@ public:
     void Update() override;
     void DestroyResources() override;
 
+    ITransformProvider* GetParent() { return parent; }
+
     // Transform controls
     void SetPosition(const DirectX::XMFLOAT3& pos);
     void SetRotation(const DirectX::XMFLOAT3& rot);

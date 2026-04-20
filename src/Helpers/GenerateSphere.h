@@ -29,12 +29,12 @@ static void GenerateSphere(float radius, int latLines, int longLines, std::vecto
             int second = first + longLines + 1;
 
             outIndices.push_back(first);
-            outIndices.push_back(second);
             outIndices.push_back(first + 1);
+            outIndices.push_back(second);
 
             outIndices.push_back(second);
-            outIndices.push_back(second + 1);
             outIndices.push_back(first + 1);
+            outIndices.push_back(second + 1);
         }
     }
 }

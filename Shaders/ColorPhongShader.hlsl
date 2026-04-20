@@ -21,6 +21,7 @@ struct PS_INPUT
     float4 Pos : SV_POSITION;
     float3 WorldPos : POSITION1;
     float3 Normal : NORMAL;
+    float2 TexCoord : TEXCOORD;
 };
 
 PS_INPUT VSMain(VS_INPUT input)
@@ -29,6 +30,7 @@ PS_INPUT VSMain(VS_INPUT input)
     output.Pos = mul(float4(input.Pos, 1.0f), WVP);
     output.WorldPos = mul(float4(input.Pos, 1.0f), World).xyz;
     output.Normal = normalize(mul(input.Normal, (float3x3) World));
+    output.TexCoord = input.TexCoord;
     return output;
 }
 

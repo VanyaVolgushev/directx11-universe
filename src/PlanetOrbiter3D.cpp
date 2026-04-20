@@ -12,12 +12,40 @@ int main()
     Game game(L"PlanetOrbiter", 1024, 768);
 
     // --- CREATE EARTH AND SUN ---
-    auto sun = new PlanetComponent(&game, nullptr, 0.0f, 0.0f, 3.0f, { 1.0f, 0.95f, 0.8f, 1.0f }, PlanetShape::Sphere, 0.2f);
+    auto sun = new PlanetComponent(&game, nullptr, 0.0f, 0.0f, 3.0f, { 1.0f, 1.0f, 0.8f, 1.0f }, PlanetShape::Sphere, 0.2f, true, false);
     game.Components.push_back(sun);
-    auto earth = new PlanetComponent(&game, sun, 14.0f, 1.0f, 1.0f, { 0.0f, 0.0f, 0.0f, 1.0f }, PlanetShape::Sphere, 2.0f);
+    auto earth = new PlanetComponent(&game, sun, 14.0f, 1.0f, 1.0f, { 0.0f, 0.0f, 0.0f, 1.0f }, PlanetShape::Sphere, 2.0f, false);
     game.Components.push_back(earth);
-    auto moon = new PlanetComponent(&game, earth, 2.0f, 4.0f, 0.3f, { 0.7f, 0.7f, 0.7f, 1.0f }, PlanetShape::Box, -4.0f);
+    auto moon = new PlanetComponent(&game, earth, 2.0f, 4.0f, 0.3f, { 0.7f, 0.7f, 0.7f, 1.0f }, PlanetShape::Box, -4.0f, false);
     game.Components.push_back(moon);
+    
+    // --- CREATE MOON MESH ---    
+    {
+        std::vector<Vertex> fbxVertices;
+        std::vector<int> fbxIndices;
+
+        if (LoadOBJ("D:\\CG_labs\\lab2\\Lab2\\Assets\\cube.obj", fbxVertices, fbxIndices)) {
+            MeshRenderer* fbxModel = new MeshRenderer(
+                &game,
+                moon,
+                fbxVertices,
+                fbxIndices,
+                L"",
+                L"./Shaders/ColorPhongShader.hlsl"
+            );
+            fbxModel->SetPosition(DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f));
+            fbxModel->SetScale(DirectX::XMFLOAT3(0.4f, 0.4f, 0.4f));
+            // Set material
+            MaterialData boxMat;
+            boxMat.Ambient = { 0.1f, 0.1f, 0.1f, 1.0f };
+            boxMat.Diffuse = { 1.0f, 1.0f, 1.0f, 1.0f };
+            boxMat.Specular = { 0.3f, 0.3f, 0.3f, 32.0f };
+            fbxModel->SetMaterial(boxMat);
+            game.Components.push_back(fbxModel);
+
+        }
+    }
+
     game.Components.push_back(new OrbitalCam(&game, 50.0f, earth)); // Also add a camera to earth
 
     // --- CREATE LIGHT ---
@@ -47,6 +75,7 @@ int main()
             earthMat.Specular = { 0.3f, 0.3f, 0.3f, 32.0f };
             fbxModel->SetMaterial(earthMat);
             game.Components.push_back(fbxModel);
+            
         }
     }
 

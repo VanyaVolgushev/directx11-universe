@@ -15,9 +15,11 @@ public:
         float radius,
         DirectX::XMFLOAT4 color,
         PlanetShape shape = PlanetShape::Sphere,
-        float rotationSpeed = 0.0f);
+        float rotationSpeed = 0.0f,
+        bool instantiateSphereMesh = true,
+        bool usePhongShader = true);
 
-    void CreateMeshChild(PlanetShape shape, float radius, Game* game, DirectX::XMFLOAT4& color);
+    void CreateMeshChild(PlanetShape shape, float radius, Game* game, DirectX::XMFLOAT4& color, bool usePhongShader);
 
     virtual ~PlanetComponent() = default;
 

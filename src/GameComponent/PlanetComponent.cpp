@@ -6,15 +6,17 @@
 #define ORBIT_DISTANCE_MULT 1.3f
 #define ANGULAR_SPEED_MULT 0.4f
 
-PlanetComponent::PlanetComponent(Game* game, PlanetComponent* parent, float orbitRadius, float angularSpeed, float radius, DirectX::XMFLOAT4 color, PlanetShape shape, float rotationSpeed)
+PlanetComponent::PlanetComponent(Game* game, PlanetComponent* parent, float orbitRadius, float angularSpeed, float radius, DirectX::XMFLOAT4 color, PlanetShape shape, float rotationSpeed, bool instantiateMesh, bool usePhongShader)
     : GameComponent(game), parent(parent), orbitRadius(orbitRadius* ORBIT_DISTANCE_MULT),
     angularSpeed(angularSpeed* ANGULAR_SPEED_MULT), radius(radius), color(color), shape(shape),
     currentPosition(0, 0, 0), currentRotation(0, 0, 0), rotationSpeed(rotationSpeed* ANGULAR_SPEED_MULT)
 {
-    CreateMeshChild(shape, radius, game, color);
+    if (instantiateMesh) {
+    CreateMeshChild(shape, radius, game, color, usePhongShader);
+    }
 }
 
-void PlanetComponent::CreateMeshChild(PlanetShape shape, float radius, Game* game, DirectX::XMFLOAT4& color)
+void PlanetComponent::CreateMeshChild(PlanetShape shape, float radius, Game* game, DirectX::XMFLOAT4& color, bool usePhongShader)
 {
     std::vector<Vertex> verts;
     std::vector<int> inds;
@@ -26,6 +28,10 @@ void PlanetComponent::CreateMeshChild(PlanetShape shape, float radius, Game* gam
         GenerateBox(radius, verts, inds);
     }
 
+    auto shaderPath = L"./Shaders/ColorPhongShader.hlsl";
+    if (!usePhongShader) {
+        shaderPath = L"./Shaders/ColorShader.hlsl";
+    }
     // Create the MeshRenderer child
     // We pass L"" for texture since we are using a Color Phong Shader
     MeshRenderer* renderer = new MeshRenderer(
@@ -34,7 +40,7 @@ void PlanetComponent::CreateMeshChild(PlanetShape shape, float radius, Game* gam
         verts,
         inds,
         L"",               // No texture
-        L"./Shaders/ColorPhongShader.hlsl"
+        shaderPath
     );
 
     // Setup Material based on Planet Color
