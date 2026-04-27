@@ -9,7 +9,7 @@ class Game;
 class ShadowMap
 {
 public:
-    static constexpr UINT SHADOW_MAP_SIZE = 1024;
+    static constexpr UINT SHADOW_MAP_SIZE = 4096;
     static constexpr int  FACE_COUNT      = 6;
 
     explicit ShadowMap(Game* game);
